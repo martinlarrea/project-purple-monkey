@@ -175,6 +175,10 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	}
 	
 	private void jTextFieldInputActionPerformed(ActionEvent evt) {		
+		this.inputValue();
+	}
+	
+	private void  inputValue() {
 		Reporter.Report("Clave Mineral " + this.jTextFieldInput.getText());
 		String input = this.jTextFieldInput.getText();
 		boolean exito = false;
@@ -191,10 +195,16 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		if (exito) {
 			if( claveValida(input) ) {
 				Reporter.Report("Clave Mineral " + this.jTextFieldInput.getText());
+				ingresarDato(input);
 			} else {
 				JOptionPane.showMessageDialog(this, "La clave ingresada no existe"); 
 			}
 		}
+	}
+
+	private void ingresarDato(String input) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private boolean claveValida(String input) {
