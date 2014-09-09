@@ -208,7 +208,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				}
 			}
 			{
-				this.jLabelImage = new JLabel();
+				this.jLabelImage = new RockSample();
 				jScrollPaneMainImage = new JScrollPane(this.jLabelImage);
 				getContentPane().add(jScrollPaneMainImage, BorderLayout.CENTER);
 			}
