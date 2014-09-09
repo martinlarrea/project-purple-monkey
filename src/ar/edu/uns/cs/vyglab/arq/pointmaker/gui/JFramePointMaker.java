@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -14,6 +15,7 @@ import javax.swing.SwingConstants;
 
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ar.edu.uns.cs.vyglab.util.Reporter;
 
@@ -46,6 +48,8 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private JButton jButtonAbrirTrabajo;
 	private JLabel jLabelStatus;
 	private JPanel jPanelSouth;
+	
+	public String workingDirectory;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -79,6 +83,12 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				jPanelNorth.setLayout(jPanelNorthLayout);
 				{
 					jButtonNuevoTrabajo = new JButton();
+					jButtonNuevoTrabajo.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent arg0) {
+							abrirImagen();
+						}
+
+					});
 					jPanelNorth.add(jButtonNuevoTrabajo);
 					jButtonNuevoTrabajo.setText("Nuevo Trabajo");
 				}
@@ -167,7 +177,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				getContentPane().add(jScrollPaneMainImage, BorderLayout.CENTER);
 			}
 			pack();
-			this.setSize(800, 600);
+			this.setSize(794, 455);
 		} catch (Exception e) {
 		    //add your error handling code here
 			e.printStackTrace();
@@ -210,6 +220,15 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private boolean claveValida(String input) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	private void abrirImagen() {
+		// TODO Auto-generated method stub
+		JFileChooser abrir = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "jpg");
+		abrir.setFileFilter(filter);
+		abrir.showOpenDialog(this);
+
 	}
 
 }
