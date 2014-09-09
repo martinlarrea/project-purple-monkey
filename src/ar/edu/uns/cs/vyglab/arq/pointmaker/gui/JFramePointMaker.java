@@ -458,6 +458,8 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	
 	private void jLabelImageMouseClicked(MouseEvent evt) {
 		Reporter.Report(evt.getX() + " % " + evt.getY() );
+		this.jLabelImage.pointSelected(evt.getX(), evt.getY() );
+		this.jLabelImage.repaint();
 	}
 
 }
