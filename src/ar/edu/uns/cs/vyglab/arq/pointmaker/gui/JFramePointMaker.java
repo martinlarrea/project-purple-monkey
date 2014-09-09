@@ -3,6 +3,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -18,6 +20,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ar.edu.uns.cs.vyglab.util.Reporter;
+import javax.swing.ImageIcon;
 
 
 /**
@@ -48,6 +51,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private JButton jButtonAbrirTrabajo;
 	private JLabel jLabelStatus;
 	private JPanel jPanelSouth;
+	private JLabel jLabelImage;
 	
 	public String workingDirectory;
 
@@ -173,7 +177,8 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				}
 			}
 			{
-				jScrollPaneMainImage = new JScrollPane();
+				this.jLabelImage = new JLabel();
+				jScrollPaneMainImage = new JScrollPane(this.jLabelImage);
 				getContentPane().add(jScrollPaneMainImage, BorderLayout.CENTER);
 			}
 			pack();
@@ -228,6 +233,10 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "jpg");
 		abrir.setFileFilter(filter);
 		abrir.showOpenDialog(this);
+		File archivo = abrir.getSelectedFile();
+		this.jLabelImage.setIcon( new ImageIcon(archivo.getPath()));
+		this.workingDirectory = archivo.getParent() + "/";
+		Reporter.Report(this.workingDirectory);
 
 	}
 
