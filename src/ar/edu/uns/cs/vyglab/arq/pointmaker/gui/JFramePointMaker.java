@@ -31,7 +31,7 @@ import ar.edu.uns.cs.vyglab.util.Reporter;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class JFramePointMaker extends javax.swing.JFrame {
-	private JPanel jPanelNorth;
+	private JPanel jPanelNorth; 
 	private JButton jButtonNuevoTrabajo;
 	private JButton jButtonGenerarInforme;
 	private JPanel jPanelMinerales;
