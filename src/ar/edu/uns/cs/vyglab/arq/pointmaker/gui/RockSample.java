@@ -43,7 +43,7 @@ public class RockSample extends JLabel {
 		for( int i = 0; i < this.xPuntos; i++ ) {
 			for( int j = 0; j < this.yPuntos; j++ ) {
 				g.setColor(Color.MAGENTA);
-				g.drawRect(initX, initY, segX, segY);				
+				//g.drawRect(initX, initY, segX, segY);				
 				int middleX = initX + (segX/2);
 				int middleY = initY + (segY/2);
 				g.setColor(Color.GREEN);
@@ -58,8 +58,8 @@ public class RockSample extends JLabel {
 			int x1 = (this.selectedX * this.segX) - (this.segX/2);
 			int y1 = (this.selectedY * this.segY) - (this.segY/2);
 			g.setColor(Color.ORANGE);
-			g.drawOval(x1-(this.sizePunto/2), y1-(this.sizePunto/2), this.sizePunto, this.sizePunto);
-			g.drawRect((x1-1)*this.segX, (y1-1)*this.segY, this.segX, this.segY);
+			//g.drawOval(x1-(this.sizePunto/2), y1-(this.sizePunto/2), this.sizePunto, this.sizePunto);
+			g.drawRect((this.selectedX-1)*this.segX, (this.selectedY-1)*this.segY, this.segX, this.segY);
 		}
 	}
 
