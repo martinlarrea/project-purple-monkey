@@ -1,8 +1,15 @@
 package ar.edu.uns.cs.vyglab.arq.pointmaker.gui;
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.Transparency;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.swing.BoxLayout;
@@ -41,6 +48,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private JButton jButtonGenerarInforme;
 	private JPanel jPanelMinerales;
 	private JScrollPane jScrollPaneMainImage;
+	private JButton jButtonResetZoom;
 	private JTextField jTextFieldInput;
 	private JPanel jPanelZoomUltra;
 	private JPanel jPanelPorcentajes;
@@ -52,6 +60,9 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private JLabel jLabelStatus;
 	private JPanel jPanelSouth;
 	private JLabel jLabelImage;
+	private ImageIcon original;
+	private ImageIcon onView;
+	private int zoomFactor = 1;
 	
 	public String workingDirectory;
 
@@ -115,11 +126,31 @@ public class JFramePointMaker extends javax.swing.JFrame {
 					jButtonZoomIn = new JButton();
 					jPanelNorth.add(jButtonZoomIn);
 					jButtonZoomIn.setText("Zoom In");
+					jButtonZoomIn.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jButtonZoomInActionPerformed(evt);
+						}
+					});
 				}
 				{
 					jButtonZoomOut = new JButton();
 					jPanelNorth.add(jButtonZoomOut);
 					jButtonZoomOut.setText("Zoom Out");
+					jButtonZoomOut.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jButtonZoomOutActionPerformed(evt);
+						}
+					});
+				}
+				{
+					jButtonResetZoom = new JButton();
+					jPanelNorth.add(jButtonResetZoom);
+					jButtonResetZoom.setText("Reset Zoom");
+					jButtonResetZoom.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jButtonResetZoomActionPerformed(evt);
+						}
+					});
 				}
 			}
 			{
@@ -234,10 +265,163 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		abrir.setFileFilter(filter);
 		abrir.showOpenDialog(this);
 		File archivo = abrir.getSelectedFile();
-		this.jLabelImage.setIcon( new ImageIcon(archivo.getPath()));
-		this.workingDirectory = archivo.getParent() + "/";
-		Reporter.Report(this.workingDirectory);
+		if( archivo != null ) {
+			this.original = new ImageIcon(archivo.getPath());
+			this.onView = new ImageIcon(archivo.getPath());
+			
+			this.jLabelImage.setIcon( this.onView );
+			this.workingDirectory = archivo.getParent() + "/";
+			Reporter.Report(this.workingDirectory);
+		}
 
 	}
+	
+	private void jButtonZoomInActionPerformed(ActionEvent evt) {
+		this.zoomFactor++;
+		resizeImage(this.zoomFactor);
+	}
+	
+	private void resizeImage(int zoom) {
+		if( this.zoomFactor == 1 ) {
+			this.onView = new ImageIcon( this.original.getImage() );
+		}
+		else {
+			int newWidth = this.original.getIconWidth() * this.zoomFactor;
+			int newHeight = this.original.getIconHeight() * this.zoomFactor;
+			BufferedImage bi = new BufferedImage( this.original.getIconWidth(), 
+					this.original.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+			Graphics g = bi.createGraphics();
+			// paint the Icon to the BufferedImage.
+			this.original.paintIcon(null, g, 0,0);
+			g.dispose();						
+			Image newI = this.getScaledInstance(bi , newWidth, newHeight);
+			this.onView = new ImageIcon(newI);			
+		}
+		this.jLabelImage.setIcon(this.onView);
+		System.gc();
+	}
+
+	private void jButtonZoomOutActionPerformed(ActionEvent evt) {
+		if( this.zoomFactor != 1 ) {
+			this.zoomFactor--;
+			this.resizeImage(this.zoomFactor);
+		}
+	}
+	
+	/**
+     * Convenience method that returns a scaled instance of the
+     * provided {@code BufferedImage}.
+     *
+     * @param img the original image to be scaled
+     * @param targetWidth the desired width of the scaled instance,
+     *    in pixels
+     * @param targetHeight the desired height of the scaled instance,
+     *    in pixels
+     * @param hint one of the rendering hints that corresponds to
+     *    {@code RenderingHints.KEY_INTERPOLATION} (e.g.
+     *    {@code RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR},
+     *    {@code RenderingHints.VALUE_INTERPOLATION_BILINEAR},
+     *    {@code RenderingHints.VALUE_INTERPOLATION_BICUBIC})
+     * @param higherQuality if true, this method will use a multi-step
+     *    scaling technique that provides higher quality than the usual
+     *    one-step technique (only useful in downscaling cases, where
+     *    {@code targetWidth} or {@code targetHeight} is
+     *    smaller than the original dimensions, and generally only when
+     *    the {@code BILINEAR} hint is specified)
+     * @return a scaled version of the original {@code BufferedImage}
+     */
+	public Image getScaledInstance(BufferedImage img,
+            int targetWidth,
+            int targetHeight)
+	{
+		// REMIND: This only works for opaque images...
+		// Use multi-step technique: start with original size, then
+		// 	scale down in multiple passes with drawImage()
+		// until the target size is reached
+			int iw = img.getWidth();
+			int ih = img.getHeight();
+
+			Object hint = RenderingHints.VALUE_INTERPOLATION_BILINEAR;
+			int type = (img.getTransparency() == Transparency.OPAQUE) ?
+					BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+
+			//		First get down to no more than 2x in W & H
+			while (iw > targetWidth*2 || ih > targetHeight*2) {
+				iw = (iw > targetWidth*2) ? iw/2 : iw;
+				ih = (ih > targetHeight*2) ? ih/2 : ih;
+				img = scaleImage(img, type, hint, iw, ih);
+			}
+
+			// REMIND: Conservative approach:
+			// first get W right, then worry about H
+
+			// If still too wide - do a horizontal trilinear blend
+			// of img and a half-width img
+			if (iw > targetWidth) {
+				int iw2 = iw/2;
+				BufferedImage img2 = scaleImage(img, type, hint, iw2, ih);
+				if (iw2 < targetWidth) {
+					img = scaleImage(img, type, hint, targetWidth, ih);
+					img2 = scaleImage(img2, type, hint, targetWidth, ih);
+					interp(img2, img, iw-targetWidth, targetWidth-iw2);
+				}
+				img = img2;
+				iw = targetWidth;
+			}
+			// iw should now be targetWidth or smaller
+			// If still too tall - do a vertical trilinear blend
+			// of img and a half-height img
+			if (ih > targetHeight) {
+				int ih2 = ih/2;
+				BufferedImage img2 = scaleImage(img, type, hint, iw, ih2);
+				if (ih2 < targetHeight) {
+					img = scaleImage(img, type, hint, iw, targetHeight);
+					img2 = scaleImage(img2, type, hint, iw, targetHeight);
+					interp(img2, img, ih-targetHeight, targetHeight-ih2);
+				}
+				img = img2;
+				ih = targetHeight;
+			}
+			// ih should now be targetHeight or smaller
+			// If we are too small, then it was probably because one of
+			// 	the dimensions was too small from the start.
+			if (iw < targetWidth && ih < targetHeight) {
+				img = scaleImage(img, type, hint, targetWidth, targetHeight);
+			}
+
+			return img;	
+	}
+
+	private BufferedImage scaleImage(BufferedImage orig,
+            int type,
+            Object hint,
+            int w, int h)
+	{
+		BufferedImage tmp = new BufferedImage(w, h, type);
+		Graphics2D g2 = tmp.createGraphics();
+		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, hint);
+		g2.drawImage(orig, 0, 0, w, h, null);
+		g2.dispose();
+		return tmp;
+	}
+	
+	 private void interp(BufferedImage img1,
+             BufferedImage img2,
+             int weight1,
+             int weight2)
+	 {
+		 float alpha = weight1;
+		 alpha /= (weight1 + weight2);
+		 Graphics2D g2 = img1.createGraphics();
+		 g2.setComposite(
+				 AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+		 g2.drawImage(img2, 0, 0, null);
+		 g2.dispose();
+	 }
+	 
+	 private void jButtonResetZoomActionPerformed(ActionEvent evt) {
+		 this.zoomFactor = 1;
+		 this.resizeImage(this.zoomFactor);
+	 }
 
 }
