@@ -9,6 +9,8 @@ import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -59,10 +61,12 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private JButton jButtonAbrirTrabajo;
 	private JLabel jLabelStatus;
 	private JPanel jPanelSouth;
-	private JLabel jLabelImage;
+	private RockSample jLabelImage;
 	private ImageIcon original;
 	private ImageIcon onView;
 	private int zoomFactor = 1;
+	protected int xPoints;
+	protected int yPoints;
 	
 	public String workingDirectory;
 
@@ -209,6 +213,14 @@ public class JFramePointMaker extends javax.swing.JFrame {
 			}
 			{
 				this.jLabelImage = new RockSample();
+				this.jLabelImage.setSizePunto(6);
+				jLabelImage.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent evt) {
+						jLabelImageMouseClicked(evt);
+					}
+				});
+				this.jLabelImage.setXPuntos(15);
+				this.jLabelImage.setYPuntos(25);
 				jScrollPaneMainImage = new JScrollPane(this.jLabelImage);
 				getContentPane().add(jScrollPaneMainImage, BorderLayout.CENTER);
 			}
@@ -266,15 +278,17 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		abrir.showOpenDialog(this);
 		File archivo = abrir.getSelectedFile();
 		if( archivo != null ) {
+			PointChooser pc = new PointChooser(this);
+			pc.setLocationRelativeTo(this);
+			pc.setVisible(true);
 			this.original = new ImageIcon(archivo.getPath());
-			this.onView = new ImageIcon(archivo.getPath());
-			
+			this.onView = new ImageIcon(archivo.getPath());			
 			this.jLabelImage.setIcon( this.onView );
 			this.workingDirectory = archivo.getParent() + "/";
-			Reporter.Report(this.workingDirectory);
 		}
 
 	}
+	
 	
 	private void jButtonZoomInActionPerformed(ActionEvent evt) {
 		this.zoomFactor++;
@@ -423,5 +437,27 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		 this.zoomFactor = 1;
 		 this.resizeImage(this.zoomFactor);
 	 }
+
+	public int getxPoints() {
+		return xPoints;
+	}
+
+	public void setxPoints(int xPoints) {
+		this.xPoints = xPoints;
+		this.jLabelImage.setXPuntos(this.xPoints);
+	}
+
+	public int getyPoints() {
+		return yPoints;
+	}
+
+	public void setyPoints(int yPoints) {
+		this.yPoints = yPoints;
+		this.jLabelImage.setYPuntos(this.yPoints);
+	}
+	
+	private void jLabelImageMouseClicked(MouseEvent evt) {
+		Reporter.Report(evt.getX() + " % " + evt.getY() );
+	}
 
 }
