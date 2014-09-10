@@ -1,6 +1,7 @@
 package ar.edu.uns.cs.vyglab.arq.pointmaker.gui;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -23,12 +24,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import ar.edu.uns.cs.vyglab.util.Reporter;
 import javax.swing.ImageIcon;
@@ -52,6 +56,9 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private JButton jButtonGenerarInforme;
 	private JPanel jPanelMinerales;
 	private JScrollPane jScrollPaneMainImage;
+	private JButton jButtonAgregarMineral;
+	private JTable jTableMinerales;
+	private JScrollPane jScrollPaneMinerales;
 	private JButton jButtonResetZoom;
 	public JTextField jTextFieldInput;
 	private JPanel jPanelZoomUltra;
@@ -131,7 +138,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				{
 					jButtonZoomIn = new JButton();
 					jPanelNorth.add(jButtonZoomIn);
-					jButtonZoomIn.setText("Zoom In");
+					jButtonZoomIn.setText("+Zoom");
 					jButtonZoomIn.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jButtonZoomInActionPerformed(evt);
@@ -141,7 +148,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				{
 					jButtonZoomOut = new JButton();
 					jPanelNorth.add(jButtonZoomOut);
-					jButtonZoomOut.setText("Zoom Out");
+					jButtonZoomOut.setText("-Zoom");
 					jButtonZoomOut.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jButtonZoomOutActionPerformed(evt);
@@ -151,10 +158,20 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				{
 					jButtonResetZoom = new JButton();
 					jPanelNorth.add(jButtonResetZoom);
-					jButtonResetZoom.setText("Reset Zoom");
+					jButtonResetZoom.setText("#Zoom");
 					jButtonResetZoom.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jButtonResetZoomActionPerformed(evt);
+						}
+					});
+				}
+				{
+					jButtonAgregarMineral = new JButton();
+					jPanelNorth.add(jButtonAgregarMineral);
+					jButtonAgregarMineral.setText("+Mineral");
+					jButtonAgregarMineral.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jButtonAgregarMineralActionPerformed(evt);
 						}
 					});
 				}
@@ -187,6 +204,22 @@ public class JFramePointMaker extends javax.swing.JFrame {
 					jPanelEast.add(jPanelMinerales);
 					jPanelMinerales.setLayout(jPanelMineralesLayout);
 					jPanelMinerales.setOpaque(false);
+					jPanelMinerales.setPreferredSize(new java.awt.Dimension(200, 85));
+					jPanelMinerales.setSize(200, 100);
+					{
+						jScrollPaneMinerales = new JScrollPane();
+						jPanelMinerales.add(jScrollPaneMinerales, BorderLayout.CENTER);
+						jScrollPaneMinerales.setPreferredSize(new java.awt.Dimension(200, 136));
+						{
+							TableModel jTableMineralesModel = 
+									new DefaultTableModel(
+											new String[][] { },
+											new String[] { "Clave", "Mineral" });
+							jTableMinerales = new JTable();
+							jScrollPaneMinerales.setViewportView(jTableMinerales);
+							jTableMinerales.setModel(jTableMineralesModel);
+						}
+					}
 				}
 				{
 					jPanelPorcentajes = new JPanel();
@@ -513,7 +546,29 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	}
 
 	private void ingresarPunto() {
-		// if punto ingresado valido then movimiento automatico
+		String input = this.jTextFieldInput.getText();
+		boolean exito = false;
+		try {
+			if (!input.isEmpty()) {
+				Integer value = Integer.parseInt(input);	
+			}			
+			exito = true;
+		}
+		catch( NumberFormatException e ) {
+			JOptionPane.showMessageDialog(this, "La clave ingresada no es un número"); 
+		} 
+		catch( Exception e) {
+			JOptionPane.showMessageDialog(this, "Error desconocido en clave");
+		}
+		if (exito) {
+			if( !input.isEmpty() ) {
+				if( claveValida(input) ) {
+					ingresarDato(input);
+				} else {
+					JOptionPane.showMessageDialog(this, "La clave ingresada no existe"); 
+				}
+			}
+		}		
 		this.movimientoAutomatico();
 		
 	}
@@ -549,6 +604,11 @@ public class JFramePointMaker extends javax.swing.JFrame {
 			}
 		}
 		
+	}
+	
+	private void jButtonAgregarMineralActionPerformed(ActionEvent evt) {
+		DefaultTableModel model = (DefaultTableModel)this.jTableMinerales.getModel();
+		model.addRow(new Object[]{"clave", "mineral"});
 	}
 
 }
