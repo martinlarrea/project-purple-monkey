@@ -117,6 +117,7 @@ public class PointChooser extends javax.swing.JDialog {
 			this.parent.setxPoints(x);
 			this.parent.setyPoints(y);
 			this.parent.repaint();
+			this.parent.jTextFieldInput.requestFocus();
 			this.dispose();
 		}
 

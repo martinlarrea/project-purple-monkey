@@ -9,6 +9,8 @@ import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -51,7 +53,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private JPanel jPanelMinerales;
 	private JScrollPane jScrollPaneMainImage;
 	private JButton jButtonResetZoom;
-	private JTextField jTextFieldInput;
+	public JTextField jTextFieldInput;
 	private JPanel jPanelZoomUltra;
 	private JPanel jPanelPorcentajes;
 	private JPanel jPanelEast;
@@ -203,6 +205,11 @@ public class JFramePointMaker extends javax.swing.JFrame {
 						jTextFieldInput = new JTextField();
 						jPanelZoomUltra.add(jTextFieldInput, BorderLayout.SOUTH);
 						jTextFieldInput.setHorizontalAlignment(SwingConstants.CENTER);
+						jTextFieldInput.addKeyListener(new KeyAdapter() {
+							public void keyPressed(KeyEvent evt) {
+								jTextFieldInputKeyPressed(evt);
+							}
+						});
 						jTextFieldInput.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
 								jTextFieldInputActionPerformed(evt);
@@ -233,7 +240,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	}
 	
 	private void jTextFieldInputActionPerformed(ActionEvent evt) {		
-		this.inputValue();
+		//this.inputValue();
 	}
 	
 	private void  inputValue() {
@@ -284,7 +291,8 @@ public class JFramePointMaker extends javax.swing.JFrame {
 			this.original = new ImageIcon(archivo.getPath());
 			this.onView = new ImageIcon(archivo.getPath());			
 			this.jLabelImage.setIcon( this.onView );
-			this.workingDirectory = archivo.getParent() + "/";
+			this.workingDirectory = archivo.getParent() + "/";		
+			this.requestFocus();
 		}
 
 	}
@@ -457,9 +465,90 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	}
 	
 	private void jLabelImageMouseClicked(MouseEvent evt) {
-		Reporter.Report(evt.getX() + " % " + evt.getY() );
 		this.jLabelImage.pointSelected(evt.getX(), evt.getY() );
 		this.jLabelImage.repaint();
+	}
+	
+	
+	private void jTextFieldInputKeyPressed(KeyEvent evt) {
+		switch(evt.getKeyCode()) {
+			case KeyEvent.VK_ENTER: {
+				this.ingresarPunto();
+				break;
+			}
+			case KeyEvent.VK_UP: {
+				this.moverCelda(0,-1);
+				break;				
+			}
+			case KeyEvent.VK_DOWN: {
+				this.moverCelda(0,1);
+				break;				
+			}
+			case KeyEvent.VK_LEFT: {
+				this.moverCelda(-1,0);
+				break;				
+			}
+			case KeyEvent.VK_RIGHT: {
+				this.moverCelda(1,0);
+				break;				
+			}
+		}
+	}
+
+	private void moverCelda(int i, int j) {
+		if( (this.jLabelImage.getSelectedX() + i >= 1) && (this.jLabelImage.getSelectedY() + j >= 1) &&
+				(this.jLabelImage.getSelectedX() + i <= xPoints) && (this.jLabelImage.getSelectedY() + j <= yPoints) )
+		{
+			this.jLabelImage.setSelectedX( this.jLabelImage.getSelectedX() + i );
+			this.jLabelImage.setSelectedY( this.jLabelImage.getSelectedY() + j );
+			this.jLabelImage.repaint();
+		}
+		
+	}
+	
+	private void moverACelda( int i, int j) {
+		this.jLabelImage.setSelectedX(i);
+		this.jLabelImage.setSelectedY(j);
+		this.jLabelImage.repaint();
+	}
+
+	private void ingresarPunto() {
+		// if punto ingresado valido then movimiento automatico
+		this.movimientoAutomatico();
+		
+	}
+
+	private void movimientoAutomatico() {
+		int x = this.jLabelImage.getSelectedX();
+		int y = this.jLabelImage.getSelectedY();
+		int modx = x % 2;
+		int mody = y % 2;	
+		if( mody == 1) {
+			if( y != yPoints ) {
+				if( x != xPoints ) {
+					this.moverCelda(1, 0);
+				} else {
+					this.moverACelda(x, y+1);
+				}
+			} else {
+				if( x != xPoints ) {
+					this.moverCelda(1, 0);
+				} 
+			}
+		} else {
+			if( y != yPoints ) {
+				if( x != 1 ) {
+					this.moverCelda(-1, 0);
+				} else {
+					this.moverACelda(x, y+1);
+				}
+			} else {
+				if( x != xPoints ) {
+					this.moverCelda(-1, 0);
+				}
+			}
+		}
+		
 	}
 
 }
