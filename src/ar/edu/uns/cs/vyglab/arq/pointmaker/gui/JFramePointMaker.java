@@ -56,6 +56,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private JButton jButtonGenerarInforme;
 	private JPanel jPanelMinerales;
 	private JScrollPane jScrollPaneMainImage;
+	private JTable jTablePorcentajes;
 	private JButton jButtonAgregarMineral;
 	private JTable jTableMinerales;
 	private JScrollPane jScrollPaneMinerales;
@@ -227,6 +228,15 @@ public class JFramePointMaker extends javax.swing.JFrame {
 					jPanelEast.add(jPanelPorcentajes);
 					jPanelPorcentajes.setLayout(jPanelPorcentajesLayout);
 					jPanelPorcentajes.setOpaque(false);
+					{
+						TableModel jTablePorcentajesModel = 
+								new DefaultTableModel(
+										new String[][] { },
+										new String[] { "Clave", "%" });
+						jTablePorcentajes = new JTable();
+						jPanelPorcentajes.add(jTablePorcentajes, BorderLayout.CENTER);
+						jTablePorcentajes.setModel(jTablePorcentajesModel);
+					}
 				}
 				{
 					jPanelZoomUltra = new JPanel();
@@ -609,6 +619,9 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private void jButtonAgregarMineralActionPerformed(ActionEvent evt) {
 		DefaultTableModel model = (DefaultTableModel)this.jTableMinerales.getModel();
 		model.addRow(new Object[]{"clave", "mineral"});
+		
+		model = (DefaultTableModel)this.jTablePorcentajes.getModel();
+		model.addRow(new Object[]{"clave", "0"});
 	}
 
 }
