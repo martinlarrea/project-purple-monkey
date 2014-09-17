@@ -79,7 +79,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	protected int xPoints;
 	protected int yPoints;
 	protected JTextArea jTextAreaInformation;
-	private JScrollPane jScrollPaneMainImage;
+	public JScrollPane jScrollPaneMainImage;
 	private RockSample jRockSampleMain;
 	
 	public String workingDirectory;
@@ -298,7 +298,6 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	}
 	
 	private void  inputValue() {
-		Reporter.Report("Clave Mineral " + this.jTextFieldInput.getText());
 		String input = this.jTextFieldInput.getText();
 		boolean exito = false;
 		Integer value = -1;
@@ -314,7 +313,6 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		}
 		if (exito) {
 			if( claveValida(value) ) {
-				Reporter.Report("Clave Mineral " + this.jTextFieldInput.getText());
 				ingresarDato(value);
 				JOptionPane.showMessageDialog(this, "La clave ingresada no existe"); 
 			}
@@ -431,9 +429,6 @@ public class JFramePointMaker extends javax.swing.JFrame {
 			this.onView = new ImageIcon(newI);			
 		}
 		this.jRockSampleMain.setIcon(this.onView);
-		//this.jLabelImage.setSize(this.onView.getIconWidth(), this.onView.getIconHeight());
-		Reporter.Report(this.jRockSampleMain.getWidth());
-		Reporter.Report(this.onView.getIconWidth());
 		System.gc();
 	}
 
