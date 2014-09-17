@@ -276,7 +276,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 					jRockSampleMain.setMain(this);
 					jRockSampleMain.setXPuntos(10);
 					jRockSampleMain.setYPuntos(10);
-					jRockSampleMain.setSizePunto(10);
+					jRockSampleMain.setSizePunto(6);
 					jScrollPaneMainImage.setViewportView(jRockSampleMain);
 					jRockSampleMain.addMouseListener(new MouseAdapter() {
 						public void mouseClicked(MouseEvent evt) {
