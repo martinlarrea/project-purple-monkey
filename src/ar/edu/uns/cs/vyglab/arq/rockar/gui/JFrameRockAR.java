@@ -73,7 +73,7 @@ public class JFrameRockAR extends javax.swing.JFrame {
 				{
 					jButtonLanguage = new JButton();
 					jToolBarMain.add(jButtonLanguage);
-					jButtonLanguage.setText("Seleccionar Idioma");
+					jButtonLanguage.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/United-Nations-Flag-1-icon.png")));
 					jButtonLanguage.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jButtonLanguageActionPerformed(evt);
@@ -83,12 +83,14 @@ public class JFrameRockAR extends javax.swing.JFrame {
 				{
 					jButtonLegalInformation = new JButton();
 					jToolBarMain.add(jButtonLegalInformation);
-					jButtonLegalInformation.setText("Legal");
+					jButtonLegalInformation.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/Very-Basic-About-icon.png")));
 				}
 				{
 					jButtonExit = new JButton();
 					jToolBarMain.add(jButtonExit);
 					jButtonExit.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/Users-Exit-icon.png")));
+					jButtonExit.setSize(44, 44);
+					jButtonExit.setPreferredSize(new java.awt.Dimension(44, 44));
 					jButtonExit.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jButtonExitActionPerformed(evt);
