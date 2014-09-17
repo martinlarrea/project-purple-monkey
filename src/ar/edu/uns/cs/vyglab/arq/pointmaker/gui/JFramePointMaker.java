@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -58,8 +59,6 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private JButton jButtonNuevoTrabajo;
 	private JButton jButtonGenerarInforme;
 	private JPanel jPanelMinerales;
-	private JScrollPane jScrollPaneMainImage;
-	private JTable jTablePorcentajes;
 	private JButton jButtonAgregarMineral;
 	private JTable jTableMinerales;
 	private JScrollPane jScrollPaneMinerales;
@@ -74,16 +73,19 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private JButton jButtonAbrirTrabajo;
 	private JLabel jLabelStatus;
 	private JPanel jPanelSouth;
-	private RockSample jLabelImage;
 	private ImageIcon original;
 	private ImageIcon onView;
 	private int zoomFactor = 1;
 	protected int xPoints;
 	protected int yPoints;
+	protected JTextArea jTextAreaInformation;
+	private JScrollPane jScrollPaneMainImage;
+	private RockSample jRockSampleMain;
 	
 	public String workingDirectory;
 	public HashMap<Point, Integer> puntos;
 	public HashMap<Integer, Vector<Point> > minerales;
+	public int keys = 0;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -239,13 +241,8 @@ public class JFramePointMaker extends javax.swing.JFrame {
 					jPanelPorcentajes.setLayout(jPanelPorcentajesLayout);
 					jPanelPorcentajes.setOpaque(false);
 					{
-						TableModel jTablePorcentajesModel = 
-								new DefaultTableModel(
-										new String[][] { },
-										new String[] { "Clave", "%" });
-						jTablePorcentajes = new JTable();
-						jPanelPorcentajes.add(jTablePorcentajes, BorderLayout.CENTER);
-						jTablePorcentajes.setModel(jTablePorcentajesModel);
+						jTextAreaInformation = new JTextArea();
+						jPanelPorcentajes.add(jTextAreaInformation, BorderLayout.CENTER);
 					}
 				}
 				{
@@ -272,18 +269,21 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				}
 			}
 			{
-				this.jLabelImage = new RockSample();
-				this.jLabelImage.setMain(this);
-				this.jLabelImage.setSizePunto(6);
-				jLabelImage.addMouseListener(new MouseAdapter() {
-					public void mouseClicked(MouseEvent evt) {
-						jLabelImageMouseClicked(evt);
-					}
-				});
-				this.jLabelImage.setXPuntos(15);
-				this.jLabelImage.setYPuntos(25);
-				jScrollPaneMainImage = new JScrollPane(this.jLabelImage);
+				jScrollPaneMainImage = new JScrollPane();
 				getContentPane().add(jScrollPaneMainImage, BorderLayout.CENTER);
+				{
+					jRockSampleMain = new RockSample();
+					jRockSampleMain.setMain(this);
+					jRockSampleMain.setXPuntos(10);
+					jRockSampleMain.setYPuntos(10);
+					jRockSampleMain.setSizePunto(10);
+					jScrollPaneMainImage.setViewportView(jRockSampleMain);
+					jRockSampleMain.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent evt) {
+							jRockSampleMainMouseClicked(evt);
+						}
+					});
+				}
 			}
 			pack();
 			this.setSize(794, 455);
@@ -322,8 +322,8 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	}
 
 	private void ingresarDato(int input) {
-		int x = this.jLabelImage.getSelectedX();
-		int y = this.jLabelImage.getSelectedY();
+		int x = this.jRockSampleMain.getSelectedX();
+		int y = this.jRockSampleMain.getSelectedY();
 		Point p = new Point(x,y);
 		int oldmin = -1;
 		
@@ -356,12 +356,27 @@ public class JFramePointMaker extends javax.swing.JFrame {
 			this.minerales.put(input, nuevospuntos);
 		}
 		
-		
+		updateInformation();
+	}
+
+	private void updateInformation() {
+		this.jTextAreaInformation.setText("");
+		String result = "";
+		int top = this.jTableMinerales.getModel().getRowCount();
+		for( int i = 0; i < top; i++ ) {
+			Integer mineral = Integer.parseInt( this.jTableMinerales.getModel().getValueAt(i, 0).toString());
+			int count = 0;
+			if( this.minerales.containsKey(mineral) ) {
+				count = this.minerales.get(mineral).size();
+			}
+			result = result + "\n" + "Mineral " + mineral + " hay " + count + " puntos.";
+		}
+		this.jTextAreaInformation.setText(result);
 	}
 
 	private boolean claveValida(int input) {
 		int rows = this.jTableMinerales.getModel().getRowCount();
-		for( int i = 0; i < rows; i++ ) {
+		for( int i = 0; i < rows; i++ ) {		
 			Integer key = Integer.parseInt( this.jTableMinerales.getModel().getValueAt(i, 0).toString() );
 			if(  key == input ) {
 				return true;
@@ -383,11 +398,12 @@ public class JFramePointMaker extends javax.swing.JFrame {
 			pc.setVisible(true);
 			this.original = new ImageIcon(archivo.getPath());
 			this.onView = new ImageIcon(archivo.getPath());			
-			this.jLabelImage.setIcon( this.onView );
+			this.jRockSampleMain.setIcon( this.onView );
 			this.workingDirectory = archivo.getParent() + "/";		
 			this.requestFocus();
 			this.puntos = new HashMap<Point, Integer>();
 			this.minerales = new HashMap<Integer, Vector<Point>>();
+			//this.jRockSampleMain.setSize(this.onView.getIconWidth(), this.onView.getIconHeight());
 		}
 
 	}
@@ -414,7 +430,10 @@ public class JFramePointMaker extends javax.swing.JFrame {
 			Image newI = this.getScaledInstance(bi , newWidth, newHeight);
 			this.onView = new ImageIcon(newI);			
 		}
-		this.jLabelImage.setIcon(this.onView);
+		this.jRockSampleMain.setIcon(this.onView);
+		//this.jLabelImage.setSize(this.onView.getIconWidth(), this.onView.getIconHeight());
+		Reporter.Report(this.jRockSampleMain.getWidth());
+		Reporter.Report(this.onView.getIconWidth());
 		System.gc();
 	}
 
@@ -547,7 +566,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 
 	public void setxPoints(int xPoints) {
 		this.xPoints = xPoints;
-		this.jLabelImage.setXPuntos(this.xPoints);
+		this.jRockSampleMain.setXPuntos(this.xPoints);
 	}
 
 	public int getyPoints() {
@@ -556,12 +575,15 @@ public class JFramePointMaker extends javax.swing.JFrame {
 
 	public void setyPoints(int yPoints) {
 		this.yPoints = yPoints;
-		this.jLabelImage.setYPuntos(this.yPoints);
+		this.jRockSampleMain.setYPuntos(this.yPoints);
 	}
 	
-	private void jLabelImageMouseClicked(MouseEvent evt) {
-		this.jLabelImage.pointSelected(evt.getX(), evt.getY() );
-		this.jLabelImage.repaint();
+	private void updateInputField() {
+		Point p = new Point(this.jRockSampleMain.getSelectedX(), this.jRockSampleMain.getSelectedY() );
+		if( this.puntos.containsKey(p) ) {
+			Integer key = this.puntos.get(p);
+			this.jTextFieldInput.setText(key.toString() );
+		}
 	}
 	
 	
@@ -569,45 +591,51 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		switch(evt.getKeyCode()) {
 			case KeyEvent.VK_ENTER: {
 				this.ingresarPunto();
+				this.updateInputField();
 				break;
 			}
 			case KeyEvent.VK_UP: {
 				this.moverCelda(0,-1);
+				this.updateInputField();
 				break;				
 			}
 			case KeyEvent.VK_DOWN: {
 				this.moverCelda(0,1);
+				this.updateInputField();
 				break;				
 			}
 			case KeyEvent.VK_LEFT: {
 				this.moverCelda(-1,0);
+				this.updateInputField();
 				break;				
 			}
 			case KeyEvent.VK_RIGHT: {
 				this.moverCelda(1,0);
+				this.updateInputField();
 				break;				
 			}
 			default: {
 
 			}
 		}
+		
 	}
 
 	private void moverCelda(int i, int j) {
-		if( (this.jLabelImage.getSelectedX() + i >= 1) && (this.jLabelImage.getSelectedY() + j >= 1) &&
-				(this.jLabelImage.getSelectedX() + i <= xPoints) && (this.jLabelImage.getSelectedY() + j <= yPoints) )
+		if( (this.jRockSampleMain.getSelectedX() + i >= 1) && (this.jRockSampleMain.getSelectedY() + j >= 1) &&
+				(this.jRockSampleMain.getSelectedX() + i <= xPoints) && (this.jRockSampleMain.getSelectedY() + j <= yPoints) )
 		{
-			this.jLabelImage.setSelectedX( this.jLabelImage.getSelectedX() + i );
-			this.jLabelImage.setSelectedY( this.jLabelImage.getSelectedY() + j );
-			this.jLabelImage.repaint();
+			this.jRockSampleMain.setSelectedX( this.jRockSampleMain.getSelectedX() + i );
+			this.jRockSampleMain.setSelectedY( this.jRockSampleMain.getSelectedY() + j );
+			this.jRockSampleMain.repaint();
 		}
 		
 	}
 	
 	private void moverACelda( int i, int j) {
-		this.jLabelImage.setSelectedX(i);
-		this.jLabelImage.setSelectedY(j);
-		this.jLabelImage.repaint();
+		this.jRockSampleMain.setSelectedX(i);
+		this.jRockSampleMain.setSelectedY(j);
+		this.jRockSampleMain.repaint();
 	}
 
 	private void ingresarPunto() {
@@ -640,8 +668,8 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	}
 
 	private void movimientoAutomatico() {
-		int x = this.jLabelImage.getSelectedX();
-		int y = this.jLabelImage.getSelectedY();
+		int x = this.jRockSampleMain.getSelectedX();
+		int y = this.jRockSampleMain.getSelectedY();
 		int modx = x % 2;
 		int mody = y % 2;	
 		if( mody == 1) {
@@ -674,10 +702,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	
 	private void jButtonAgregarMineralActionPerformed(ActionEvent evt) {
 		DefaultTableModel model = (DefaultTableModel)this.jTableMinerales.getModel();
-		model.addRow(new Object[]{"clave", "mineral"});
-		
-		model = (DefaultTableModel)this.jTablePorcentajes.getModel();
-		model.addRow(new Object[]{"clave", "0"});
+		model.addRow(new Object[]{String.valueOf(this.keys++), "mineral"});
 	}
 	
 	private void jButtonGenerarInformeActionPerformed(ActionEvent evt) {
@@ -694,6 +719,12 @@ public class JFramePointMaker extends javax.swing.JFrame {
 			}
 			Reporter.Report("Mineral " + mineral + " hay " + count + " puntos.");
 		}
+	}
+	
+	private void jRockSampleMainMouseClicked(MouseEvent evt) {
+		this.jRockSampleMain.pointSelected(evt.getX(), evt.getY() );
+		this.jRockSampleMain.repaint();
+		this.updateInputField();
 	}
 
 }
