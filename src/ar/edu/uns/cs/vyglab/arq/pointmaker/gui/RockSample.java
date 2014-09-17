@@ -2,6 +2,7 @@ package ar.edu.uns.cs.vyglab.arq.pointmaker.gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 
 import javax.swing.JLabel;
 
@@ -15,6 +16,7 @@ public class RockSample extends JLabel {
 	protected int selectedY = 1;
 	protected int segX = 1;
 	protected int segY = 1;
+	protected JFramePointMaker main; 
 	
 	public void setXPuntos( int x ) {
 		this.xPuntos = x;
@@ -42,12 +44,18 @@ public class RockSample extends JLabel {
 		int initY = 0;
 		for( int i = 0; i < this.xPuntos; i++ ) {
 			for( int j = 0; j < this.yPuntos; j++ ) {
-				g.setColor(Color.MAGENTA);
-				//g.drawRect(initX, initY, segX, segY);				
+				g.setColor(Color.MAGENTA);				
 				int middleX = initX + (segX/2);
 				int middleY = initY + (segY/2);
 				g.setColor(Color.GREEN);
-				g.drawOval(middleX-(this.sizePunto/2), middleY-(this.sizePunto/2), this.sizePunto, this.sizePunto);				
+				g.drawOval(middleX-(this.sizePunto/2), middleY-(this.sizePunto/2), this.sizePunto, this.sizePunto);
+				
+				Point p = new Point(i+1,j+1);
+				if( (this.getMain().puntos != null) && (this.getMain().puntos.containsKey(p)) ) {
+					g.setColor(Color.WHITE);
+					g.fillOval(middleX-(this.sizePunto/2), middleY-(this.sizePunto/2), this.sizePunto, this.sizePunto);
+					
+				}												
 				initY = initY + segY;
 			}
 			initX = initX + segX;
@@ -58,7 +66,6 @@ public class RockSample extends JLabel {
 			int x1 = (this.selectedX * this.segX) - (this.segX/2);
 			int y1 = (this.selectedY * this.segY) - (this.segY/2);
 			g.setColor(Color.ORANGE);
-			//g.drawOval(x1-(this.sizePunto/2), y1-(this.sizePunto/2), this.sizePunto, this.sizePunto);
 			g.drawRect((this.selectedX-1)*this.segX, (this.selectedY-1)*this.segY, this.segX, this.segY);
 		}
 	}
@@ -94,5 +101,13 @@ public class RockSample extends JLabel {
 
 	public void setSelectedY(int selectedY) {
 		this.selectedY = selectedY;
+	}
+
+	public JFramePointMaker getMain() {
+		return main;
+	}
+
+	public void setMain(JFramePointMaker main) {
+		this.main = main;
 	}
 }

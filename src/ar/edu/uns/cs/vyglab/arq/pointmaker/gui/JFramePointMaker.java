@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -79,6 +82,8 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	protected int yPoints;
 	
 	public String workingDirectory;
+	public HashMap<Point, Integer> puntos;
+	public HashMap<Integer, Vector<Point> > minerales;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -135,6 +140,11 @@ public class JFramePointMaker extends javax.swing.JFrame {
 					jButtonGenerarInforme = new JButton();
 					jPanelNorth.add(jButtonGenerarInforme);
 					jButtonGenerarInforme.setText("Generar Informe");
+					jButtonGenerarInforme.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jButtonGenerarInformeActionPerformed(evt);
+						}
+					});
 				}
 				{
 					jButtonZoomIn = new JButton();
@@ -263,6 +273,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 			}
 			{
 				this.jLabelImage = new RockSample();
+				this.jLabelImage.setMain(this);
 				this.jLabelImage.setSizePunto(6);
 				jLabelImage.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent evt) {
@@ -290,8 +301,9 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		Reporter.Report("Clave Mineral " + this.jTextFieldInput.getText());
 		String input = this.jTextFieldInput.getText();
 		boolean exito = false;
+		Integer value = -1;
 		try {
-			Integer value = Integer.parseInt(input);
+			value = Integer.parseInt(input);
 			exito =true;
 		}
 		catch( NumberFormatException e ) {
@@ -301,22 +313,60 @@ public class JFramePointMaker extends javax.swing.JFrame {
 			JOptionPane.showMessageDialog(this, "Error desconocido en clave");
 		}
 		if (exito) {
-			if( claveValida(input) ) {
+			if( claveValida(value) ) {
 				Reporter.Report("Clave Mineral " + this.jTextFieldInput.getText());
-				ingresarDato(input);
-			} else {
+				ingresarDato(value);
 				JOptionPane.showMessageDialog(this, "La clave ingresada no existe"); 
 			}
 		}
 	}
 
-	private void ingresarDato(String input) {
-		// TODO Auto-generated method stub
+	private void ingresarDato(int input) {
+		int x = this.jLabelImage.getSelectedX();
+		int y = this.jLabelImage.getSelectedY();
+		Point p = new Point(x,y);
+		int oldmin = -1;
+		
+		// actualizo mapeo de puntos a mineral
+		if( this.puntos.containsKey(p)) {
+			if( this.puntos.get(p) != input ) {
+				oldmin = this.puntos.get(p);
+				// el punto existe pero con una clave diferente
+				// se cambia la clave
+				this.puntos.put(p, input);
+			}
+		} else {
+			//el punto no existe
+			this.puntos.put(p, input);
+		}
+		
+		// actualizo mapeo de mineral a puntos
+		if( this.minerales.containsKey(input) ) {
+			// ya existe una lista de puntos asociada al mineral
+			if( oldmin != -1 ) {
+				//hay que sacar un punto de oldmin y ponerlo en input
+				this.minerales.get(oldmin).remove(p);
+				this.minerales.get(input).add(p);
+			} else {
+				this.minerales.get(input).add(p);
+			}
+		} else {
+			Vector<Point> nuevospuntos = new Vector<Point>();
+			nuevospuntos.add(p);
+			this.minerales.put(input, nuevospuntos);
+		}
+		
 		
 	}
 
-	private boolean claveValida(String input) {
-		// TODO Auto-generated method stub
+	private boolean claveValida(int input) {
+		int rows = this.jTableMinerales.getModel().getRowCount();
+		for( int i = 0; i < rows; i++ ) {
+			Integer key = Integer.parseInt( this.jTableMinerales.getModel().getValueAt(i, 0).toString() );
+			if(  key == input ) {
+				return true;
+			}
+		}		
 		return false;
 	}
 	
@@ -336,6 +386,8 @@ public class JFramePointMaker extends javax.swing.JFrame {
 			this.jLabelImage.setIcon( this.onView );
 			this.workingDirectory = archivo.getParent() + "/";		
 			this.requestFocus();
+			this.puntos = new HashMap<Point, Integer>();
+			this.minerales = new HashMap<Integer, Vector<Point>>();
 		}
 
 	}
@@ -535,6 +587,9 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				this.moverCelda(1,0);
 				break;				
 			}
+			default: {
+
+			}
 		}
 	}
 
@@ -558,9 +613,10 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	private void ingresarPunto() {
 		String input = this.jTextFieldInput.getText();
 		boolean exito = false;
+		Integer value = -1;
 		try {
 			if (!input.isEmpty()) {
-				Integer value = Integer.parseInt(input);	
+				value = Integer.parseInt(input);	
 			}			
 			exito = true;
 		}
@@ -572,14 +628,14 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		}
 		if (exito) {
 			if( !input.isEmpty() ) {
-				if( claveValida(input) ) {
-					ingresarDato(input);
+				if( claveValida(value) ) {
+					ingresarDato(value);
+					this.movimientoAutomatico();
 				} else {
 					JOptionPane.showMessageDialog(this, "La clave ingresada no existe"); 
 				}
 			}
 		}		
-		this.movimientoAutomatico();
 		
 	}
 
@@ -622,6 +678,22 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		
 		model = (DefaultTableModel)this.jTablePorcentajes.getModel();
 		model.addRow(new Object[]{"clave", "0"});
+	}
+	
+	private void jButtonGenerarInformeActionPerformed(ActionEvent evt) {
+		generarInforme();
+	}
+
+	private void generarInforme() {
+		int top = this.jTableMinerales.getModel().getRowCount();
+		for( int i = 0; i < top; i++ ) {
+			Integer mineral = Integer.parseInt( this.jTableMinerales.getModel().getValueAt(i, 0).toString());
+			int count = 0;
+			if( this.minerales.containsKey(mineral) ) {
+				count = this.minerales.get(mineral).size();
+			}
+			Reporter.Report("Mineral " + mineral + " hay " + count + " puntos.");
+		}
 	}
 
 }
