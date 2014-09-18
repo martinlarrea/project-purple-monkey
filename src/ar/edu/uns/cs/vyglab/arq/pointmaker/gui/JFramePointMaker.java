@@ -346,7 +346,9 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				this.minerales.get(oldmin).remove(p);
 				this.minerales.get(input).add(p);
 			} else {
-				this.minerales.get(input).add(p);
+				if( !this.minerales.get(input).contains(p) ) {
+					this.minerales.get(input).add(p);
+				}
 			}
 		} else {
 			Vector<Point> nuevospuntos = new Vector<Point>();
