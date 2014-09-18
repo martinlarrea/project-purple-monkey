@@ -1,26 +1,14 @@
 <work>
-	<image>
-	</image>
+	<image path="" />
 	
 	<minerals>
-		<mineral>
-			<name>			</name>
-			<id>			</id>
-		</mineral>
-		<mineral>
-		</mineral>
+		<mineral id="1" name="" />
+		<mineral id="2" name="" />
 	</minerals>
 	
-	<grid>
-		<x>		</x>
-		<y>		</y>
-	</grid>
+	<grid x="" y="" />
 	
 	<points>
-		<point>
-			<x>			</x>
-			<y>			</y>
-			<id>		</id>
-		</point>
+		<point x="" y="" id=""/>
 	</points>
 </work>

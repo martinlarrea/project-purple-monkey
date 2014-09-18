@@ -18,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -40,6 +41,16 @@ import javax.swing.table.TableModel;
 
 import ar.edu.uns.cs.vyglab.util.Reporter;
 import javax.swing.ImageIcon;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**
@@ -86,6 +97,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	public HashMap<Point, Integer> puntos;
 	public HashMap<Integer, Vector<Point> > minerales;
 	public int keys = 0;
+	private File archivo;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -132,6 +144,11 @@ public class JFramePointMaker extends javax.swing.JFrame {
 					jButtonAbrirTrabajo = new JButton();
 					jPanelNorth.add(jButtonAbrirTrabajo);
 					jButtonAbrirTrabajo.setText("Abrir Trabajo");
+					jButtonAbrirTrabajo.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jButtonAbrirTrabajoActionPerformed(evt);
+						}
+					});
 				}
 				{
 					jButtonGuardarTrabajo = new JButton();
@@ -299,8 +316,113 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	}
 	
 	protected void guardarTrabajo() {
-		
-		
+		File currentDir = new File( System.getProperty("user.dir") );
+		JFileChooser abrir = new JFileChooser(currentDir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("XML File", "xml", "xml");
+		abrir.setFileFilter(filter);
+		int response = abrir.showSaveDialog(this);
+		if( response == abrir.APPROVE_OPTION ) {
+			File file = abrir.getSelectedFile();
+			try {
+				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+				// root elements
+				Document doc = docBuilder.newDocument();
+				Element rootElement = doc.createElement("work");
+				doc.appendChild(rootElement);
+				
+				// staff elements
+				Element image = doc.createElement("image");
+				rootElement.appendChild(image);
+				
+				// set attribute to image element
+				Attr attr = doc.createAttribute("name");
+				attr.setValue(this.archivo.getName());
+				image.setAttributeNode(attr);
+				
+				// mineral list elements
+				Element minerals = doc.createElement("minerals");
+				rootElement.appendChild(minerals);
+				
+				// para cada mineral en la tabla de minerales, agrego un Element
+				for( int i = 0; i < this.jTableMinerales.getRowCount(); i++ ) {
+					Element mineral = doc.createElement("mineral");
+					
+					// set attribute id to mineral element
+					attr = doc.createAttribute("id");
+					attr.setValue(this.jTableMinerales.getModel().getValueAt(i, 0).toString());
+					mineral.setAttributeNode(attr);
+					
+					// set attribute name to mineral element
+					attr = doc.createAttribute("name");
+					attr.setValue(this.jTableMinerales.getModel().getValueAt(i, 1).toString());
+					mineral.setAttributeNode(attr);
+					
+					// agrego el mineral a los minerales
+					minerals.appendChild(mineral);
+				}
+				
+				// grid elements
+				Element grid= doc.createElement("grid");
+				rootElement.appendChild(grid);
+				
+				// set attribute to image element
+				attr = doc.createAttribute("x");
+				attr.setValue(String.valueOf( this.jRockSampleMain.xPuntos ));
+				grid.setAttributeNode(attr);
+				
+				// set attribute to image element
+				attr = doc.createAttribute("y");
+				attr.setValue(String.valueOf( this.jRockSampleMain.yPuntos ));
+				grid.setAttributeNode(attr);
+				
+				// grid elements
+				Element points= doc.createElement("points");
+				rootElement.appendChild(points);
+				
+				//por cada punto registrado, lo guardo en el xml
+				Iterator<Point> pts = this.puntos.keySet().iterator();
+				while( pts.hasNext() ) {
+					Point p = pts.next();
+					int key = this.puntos.get(p);
+
+					Element point = doc.createElement("point");
+					
+					// set attribute id to point element
+					attr = doc.createAttribute("id");
+					attr.setValue(String.valueOf(key));
+					point.setAttributeNode(attr);
+					
+					// set attribute x to point element
+					attr = doc.createAttribute("x");
+					attr.setValue(String.valueOf(p.x));
+					point.setAttributeNode(attr);
+					
+					// set attribute y to point element
+					attr = doc.createAttribute("y");
+					attr.setValue(String.valueOf(p.y));
+					point.setAttributeNode(attr);
+					
+					// agrego el mineral a los minerales
+					points.appendChild(point);
+
+				}
+				
+				// write the content into xml file
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource source = new DOMSource(doc);
+				StreamResult result = new StreamResult(file);
+		 	 
+				transformer.transform(source, result);
+		 
+				System.out.println("File saved!");
+				
+			} catch( Exception e) {
+				
+			}
+			
+		}
 	}
 
 	private void jTextFieldInputActionPerformed(ActionEvent evt) {		
@@ -402,7 +524,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "jpg");
 		abrir.setFileFilter(filter);
 		abrir.showOpenDialog(this);
-		File archivo = abrir.getSelectedFile();
+		archivo = abrir.getSelectedFile();
 		if( archivo != null ) {
 			PointChooser pc = new PointChooser(this);
 			pc.setLocationRelativeTo(this);
@@ -746,6 +868,23 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		this.jRockSampleMain.pointSelected(evt.getX(), evt.getY() );
 		this.jRockSampleMain.repaint();
 		this.updateInputField();
+	}
+	
+	private void jButtonAbrirTrabajoActionPerformed(ActionEvent evt) {
+		abrirTrabajo();
+	}
+
+	private void abrirTrabajo() {
+		File currentDir = new File( System.getProperty("user.dir") );
+		JFileChooser abrir = new JFileChooser(currentDir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("XML File", "xml", "xml");
+		abrir.setFileFilter(filter);
+		int response = abrir.showSaveDialog(this);
+		if( response == abrir.APPROVE_OPTION ) {
+			File file = abrir.getSelectedFile();
+			
+		}
+		
 	}
 
 }

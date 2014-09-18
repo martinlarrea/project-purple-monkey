@@ -43,10 +43,14 @@ public class RockSample extends JLabel {
 		segX = this.getWidth() / this.xPuntos;
 		segY = this.getHeight() / this.yPuntos;
 		
+		int modsegX = this.getWidth() % this.xPuntos;
+		int modsegY = this.getHeight() % this.yPuntos;
+	
 		int initX = 0;
 		int initY = 0;
-		for( int i = 0; i < this.xPuntos; i++ ) {
+		for( int i = 0; i < this.xPuntos; i++ ) {	
 			for( int j = 0; j < this.yPuntos; j++ ) {										
+				
 				int middleX = initX + (segX/2);
 				int middleY = initY + (segY/2);
 				if( visible(middleX,middleY) ) {
