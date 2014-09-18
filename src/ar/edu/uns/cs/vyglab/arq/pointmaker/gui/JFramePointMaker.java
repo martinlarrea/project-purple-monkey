@@ -51,6 +51,8 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 /**
@@ -875,16 +877,36 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	}
 
 	private void abrirTrabajo() {
-		File currentDir = new File( System.getProperty("user.dir") );
-		JFileChooser abrir = new JFileChooser(currentDir);
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("XML File", "xml", "xml");
-		abrir.setFileFilter(filter);
-		int response = abrir.showSaveDialog(this);
-		if( response == abrir.APPROVE_OPTION ) {
-			File file = abrir.getSelectedFile();
-			
+		try {
+			File currentDir = new File( System.getProperty("user.dir") );
+			JFileChooser abrir = new JFileChooser(currentDir);
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("XML File", "xml", "xml");
+			abrir.setFileFilter(filter);
+			int response = abrir.showSaveDialog(this);
+			if( response == abrir.APPROVE_OPTION ) {					
+				File fXmlFile = abrir.getSelectedFile();
+				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+				Document doc = dBuilder.parse(fXmlFile);		 
+				doc.getDocumentElement().normalize();			 
+				//System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+			 
+				Node imagen = doc.getElementsByTagName("image").item(0);
+				
+				Element el = (Element)imagen;
+				Reporter.Report(el.getAttribute("name"));
+				
+				
+				Node grid = doc.getElementsByTagName("grid").item(0);
+				NodeList nListPoints = doc.getElementsByTagName("point");
+				NodeList nListMinerals = doc.getElementsByTagName("mineral");
+			 
+				
+			}
 		}
-		
+		catch( Exception e ) {
+			
+		}	
 	}
 
 }
