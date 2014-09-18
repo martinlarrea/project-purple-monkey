@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JViewport;
 
@@ -13,11 +14,13 @@ public class RockSample extends JLabel {
 	protected int xPuntos = 1;
 	protected int yPuntos = 1;
 	protected int sizePunto = 1;
+	protected int baseSizePunto = 1;
 	protected int selectedX = 1;
 	protected int selectedY = 1;
 	protected int segX = 1;
 	protected int segY = 1;
 	protected JFramePointMaker main = null; 
+	protected int zoom = 1;
 	
 	public void setXPuntos( int x ) {
 		this.xPuntos = x;
@@ -104,6 +107,7 @@ public class RockSample extends JLabel {
 
 	public void setSizePunto(int sizePunto) {
 		this.sizePunto = sizePunto;
+		this.baseSizePunto = sizePunto;
 	}
 
 	public void pointSelected(int x, int y) {
@@ -137,5 +141,20 @@ public class RockSample extends JLabel {
 
 	public void setMain(JFramePointMaker main) {
 		this.main = main;
+	}
+
+	public ImageIcon getZoomVisio() {
+		int x = this.getSelectedX();
+		int y = this.getSelectedY();
+		return null;
+	}
+
+	public int getZoom() {
+		return zoom;
+	}
+
+	public void setZoom(int zoom) {
+		this.zoom = zoom;
+		this.sizePunto = zoom * this.baseSizePunto;
 	}
 }

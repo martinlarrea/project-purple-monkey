@@ -93,6 +93,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	protected int yPoints;
 	protected JTextArea jTextAreaInformation;
 	public JScrollPane jScrollPaneMainImage;
+	private JLabel jLabelZoomVision;
 	private RockSample jRockSampleMain;
 	
 	public String workingDirectory;
@@ -290,6 +291,10 @@ public class JFramePointMaker extends javax.swing.JFrame {
 							}
 						});
 					}
+					{
+						jLabelZoomVision = new JLabel();
+						jPanelZoomUltra.add(jLabelZoomVision, BorderLayout.CENTER);
+					}
 				}
 			}
 			{
@@ -378,6 +383,11 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				attr.setValue(String.valueOf( this.jRockSampleMain.yPuntos ));
 				grid.setAttributeNode(attr);
 				
+				// set attribute to image element
+				attr = doc.createAttribute("size");
+				attr.setValue(String.valueOf( this.jRockSampleMain.sizePunto ));
+				grid.setAttributeNode(attr);
+				
 				// grid elements
 				Element points= doc.createElement("points");
 				rootElement.appendChild(points);
@@ -418,7 +428,6 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		 	 
 				transformer.transform(source, result);
 		 
-				System.out.println("File saved!");
 				
 			} catch( Exception e) {
 				
@@ -546,10 +555,12 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	
 	private void jButtonZoomInActionPerformed(ActionEvent evt) {
 		this.zoomFactor++;
+
 		resizeImage(this.zoomFactor);
 	}
 	
 	private void resizeImage(int zoom) {
+		//this.jRockSampleMain.setZoom(this.zoomFactor);
 		if( this.zoomFactor == 1 ) {
 			this.onView = new ImageIcon( this.original.getImage() );
 		}
@@ -882,7 +893,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 			JFileChooser abrir = new JFileChooser(currentDir);
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("XML File", "xml", "xml");
 			abrir.setFileFilter(filter);
-			int response = abrir.showSaveDialog(this);
+			int response = abrir.showOpenDialog(this);
 			if( response == abrir.APPROVE_OPTION ) {					
 				File fXmlFile = abrir.getSelectedFile();
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -892,21 +903,71 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				//System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
 			 
 				Node imagen = doc.getElementsByTagName("image").item(0);
-				
 				Element el = (Element)imagen;
-				Reporter.Report(el.getAttribute("name"));
+				this.archivo = new File(el.getAttribute("name"));
+				this.jRockSampleMain.setIcon(new ImageIcon(el.getAttribute("name")));
+				this.original = new ImageIcon(el.getAttribute("name"));
+				this.onView = new ImageIcon(el.getAttribute("name"));	
 				
 				
 				Node grid = doc.getElementsByTagName("grid").item(0);
-				NodeList nListPoints = doc.getElementsByTagName("point");
-				NodeList nListMinerals = doc.getElementsByTagName("mineral");
-			 
+				Element egrid = (Element)grid;
+				this.xPoints = Integer.parseInt( egrid.getAttribute("x") );
+				this.yPoints = Integer.parseInt( egrid.getAttribute("y") );
+
+				this.jRockSampleMain.setXPuntos(this.xPoints);
+				this.jRockSampleMain.setYPuntos(this.yPoints);
+				this.jRockSampleMain.setSizePunto( Integer.parseInt( egrid.getAttribute("size") ) );
 				
+				this.puntos = new HashMap<Point, Integer>();
+				this.minerales = new HashMap<Integer, Vector<Point>>();
+				
+				TableModel jTableMineralesModel = 
+						new DefaultTableModel(
+								new String[][] { },
+								new String[] { "Clave", "Mineral" });
+				this.jTableMinerales.setModel(jTableMineralesModel);
+				
+				NodeList nListMinerals = doc.getElementsByTagName("mineral");
+				DefaultTableModel model = (DefaultTableModel)this.jTableMinerales.getModel();
+				for( int i = 0; i < nListMinerals.getLength(); i++ ) {
+					Element mineral = (Element)nListMinerals.item(i);
+					String id = mineral.getAttribute("id");
+					String name = mineral.getAttribute("name");
+					model.addRow(new Object[]{id, name});
+				}
+				
+				//TODO CARGAR PUNTOS
+				NodeList nListPoints = doc.getElementsByTagName("point");
+				for( int i = 0; i < nListPoints.getLength(); i++ ) {
+					Element point = (Element)nListPoints.item(i);
+					int x = Integer.parseInt( point.getAttribute("x"));
+					int y = Integer.parseInt( point.getAttribute("y"));
+					int id = Integer.parseInt( point.getAttribute("id"));
+					Point p = new Point( x, y );
+					this.puntos.put(p, id);
+					
+					if( this.minerales.containsKey(id) ) {
+						this.minerales.get(id).add(p);
+					} else {
+						Vector<Point> puntos = new Vector<Point>();
+						puntos.add(p);
+						this.minerales.put(id, puntos);
+					}					
+				}
+				this.updateInformation();
 			}
 		}
 		catch( Exception e ) {
 			
 		}	
+	}
+	
+	public void updateZoomVision() {
+		ImageIcon ii = this.jRockSampleMain.getZoomVisio();
+		if( ii!= null ) {
+			this.jLabelZoomVision.setIcon(ii);
+		}
 	}
 
 }
