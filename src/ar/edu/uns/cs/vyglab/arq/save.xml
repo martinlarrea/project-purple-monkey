@@ -1,0 +1,26 @@
+<work>
+	<image>
+	</image>
+	
+	<minerals>
+		<mineral>
+			<name>			</name>
+			<id>			</id>
+		</mineral>
+		<mineral>
+		</mineral>
+	</minerals>
+	
+	<grid>
+		<x>		</x>
+		<y>		</y>
+	</grid>
+	
+	<points>
+		<point>
+			<x>			</x>
+			<y>			</y>
+			<id>		</id>
+		</point>
+	</points>
+</work>

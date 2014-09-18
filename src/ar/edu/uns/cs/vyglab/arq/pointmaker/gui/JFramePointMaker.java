@@ -135,6 +135,11 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				}
 				{
 					jButtonGuardarTrabajo = new JButton();
+					jButtonGuardarTrabajo.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent arg0) {
+							guardarTrabajo();
+						}
+					});
 					jPanelNorth.add(jButtonGuardarTrabajo);
 					jButtonGuardarTrabajo.setText("Guardar Trabajo");
 				}
@@ -293,6 +298,11 @@ public class JFramePointMaker extends javax.swing.JFrame {
 		}
 	}
 	
+	protected void guardarTrabajo() {
+		
+		
+	}
+
 	private void jTextFieldInputActionPerformed(ActionEvent evt) {		
 		//this.inputValue();
 	}
@@ -387,7 +397,8 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	
 	private void abrirImagen() {
 		// TODO Auto-generated method stub
-		JFileChooser abrir = new JFileChooser();
+		File currentDir = new File( System.getProperty("user.dir") );
+		JFileChooser abrir = new JFileChooser(currentDir);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "jpg");
 		abrir.setFileFilter(filter);
 		abrir.showOpenDialog(this);
@@ -659,7 +670,20 @@ public class JFramePointMaker extends javax.swing.JFrame {
 				} else {
 					JOptionPane.showMessageDialog(this, "La clave ingresada no existe"); 
 				}
+			} else {
+				//el usuario no ingreso nada
+				//si el punto seleccionado ya estaba cargado
+				//se considera que se quiere borrar ese dato
+				Point p = new Point(this.jRockSampleMain.getSelectedX(), this.jRockSampleMain.getSelectedY() );
+				if( this.puntos.containsKey(p)) {
+					int key = this.puntos.get(p);
+					this.puntos.remove(p);
+					this.minerales.get(key).remove(p);
+					this.jRockSampleMain.repaint();
+					this.updateInformation();
+				}
 			}
+				
 		}		
 		
 	}

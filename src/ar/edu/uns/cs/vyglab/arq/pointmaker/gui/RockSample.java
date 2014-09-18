@@ -17,7 +17,7 @@ public class RockSample extends JLabel {
 	protected int selectedY = 1;
 	protected int segX = 1;
 	protected int segY = 1;
-	protected JFramePointMaker main; 
+	protected JFramePointMaker main = null; 
 	
 	public void setXPuntos( int x ) {
 		this.xPuntos = x;
@@ -38,6 +38,8 @@ public class RockSample extends JLabel {
 	public void paint( Graphics g ) {
 		super.paint(g);
 						
+		if( main == null ) {return;}
+		
 		segX = this.getWidth() / this.xPuntos;
 		segY = this.getHeight() / this.yPuntos;
 		
@@ -74,6 +76,8 @@ public class RockSample extends JLabel {
 	}
 
 	private boolean visible(int i, int j) {
+		
+		if( this.main == null ) {return false;}
 		
 		int scrollX = this.main.jScrollPaneMainImage.getHorizontalScrollBar().getValue();
 		int scrollY = this.main.jScrollPaneMainImage.getVerticalScrollBar().getValue();
