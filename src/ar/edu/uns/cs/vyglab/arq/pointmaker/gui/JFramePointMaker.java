@@ -94,7 +94,7 @@ public class JFramePointMaker extends javax.swing.JFrame {
 	protected JTextArea jTextAreaInformation;
 	public JScrollPane jScrollPaneMainImage;
 	private JLabel jLabelZoomVision;
-	private RockSample jRockSampleMain;
+	public RockSample jRockSampleMain;
 	
 	public String workingDirectory;
 	public HashMap<Point, Integer> puntos;

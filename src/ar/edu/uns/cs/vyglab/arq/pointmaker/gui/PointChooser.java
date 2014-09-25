@@ -9,6 +9,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import ar.edu.uns.cs.vyglab.util.Reporter;
+
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -90,6 +92,8 @@ public class PointChooser extends javax.swing.JDialog {
 					jTextFieldPuntosVerticales = new JTextField();
 					getContentPane().add(jTextFieldPuntosVerticales);
 					jTextFieldPuntosVerticales.setBounds(220, 61, 94, 22);
+					jTextFieldPuntosVerticales.setText("10");
+					jTextFieldPuntosVerticales.setEditable(false);
 				}
 			}
 			this.setSize(338, 186);
@@ -114,6 +118,20 @@ public class PointChooser extends javax.swing.JDialog {
 			JOptionPane.showMessageDialog(this, "Error desconocido en valores");
 		}
 		if(exito) {
+			
+			int width = this.parent.jRockSampleMain.getWidth();
+			int height = this.parent.jRockSampleMain.getHeight();
+			
+			int separacion = width / x;
+			int resto = width % x;
+			
+			if( resto != 0 ) {
+				x = width / separacion;
+				Reporter.Report(x);
+			}
+			
+			y = height/ separacion;
+			
 			this.parent.setxPoints(x);
 			this.parent.setyPoints(y);
 			this.parent.repaint();
