@@ -1,4 +1,9 @@
 package ar.edu.uns.cs.vyglab.arq.rockar.main;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
+import ar.edu.uns.cs.vyglab.arq.rockar.gui.JFramePointSetter;
 import ar.edu.uns.cs.vyglab.arq.rockar.splash.SplashScreen;
 import ar.edu.uns.cs.vyglab.util.Reporter;
 
@@ -7,12 +12,18 @@ public class Main {
 
 
 	public static void main(String[] args) {
-		// Throw a nice little title page up on the screen first
+
+		// Splash Screen
 		SplashScreen splash = new SplashScreen(2000);
-		// 	Normally, we'd call splash.showSplash() and get on with the program.
-		// But, since this is only a test...
 		splash.showSplashAndExit();
-		Reporter.Report("fin");
+		
+		// Language configuration
+		DataCenter.locale = Locale.getDefault();
+		DataCenter.langResource = ResourceBundle.getBundle("ar.edu.uns.cs.vyglab.arq.rockar.resources.lang.LANG", DataCenter.locale);
+		
+		JFramePointSetter jp = new JFramePointSetter();
+		jp.setVisible(true);
+		
 	}
 
 }
