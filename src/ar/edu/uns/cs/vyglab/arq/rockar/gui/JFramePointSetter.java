@@ -5,10 +5,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,6 +23,7 @@ import javax.swing.SwingConstants;
 
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
 
@@ -97,6 +101,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				jToolBar.setFloatable(false);
 				{
 					jButtonNewWork = new JButton();
+					jButtonNewWork.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent arg0) {
+							newWork();
+						}
+					});
 					jToolBar.add(jButtonNewWork);
 					jButtonNewWork.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/Actions-tab-new-icon.png")));
 				}
@@ -300,6 +309,20 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		}
 	}
 	
+	protected void newWork() {
+		File currentDir = new File( System.getProperty("user.dir") );
+		JFileChooser openD = new JFileChooser(currentDir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "jpg");
+		openD.setFileFilter(filter);
+		openD.showOpenDialog(this);
+		File file = openD.getSelectedFile();
+		if( file != null ) {
+			DataCenter.samplePath = file.getAbsolutePath();
+			DataCenter.sampleImage = new ImageIcon(DataCenter.samplePath);
+			this.jLabelImage.setIcon(DataCenter.sampleImage);
+		}
+	}
+
 	private void jButtonExitActionPerformed(ActionEvent evt) {
 		DataCenter.exitApp();
 	}
