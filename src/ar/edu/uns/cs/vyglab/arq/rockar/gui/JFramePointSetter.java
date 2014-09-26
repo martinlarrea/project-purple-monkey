@@ -120,6 +120,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jToolBar.add(jToggleButtonPoints);
 					jToggleButtonPoints.setSize(44, 44);
 					jToggleButtonPoints.setPreferredSize(new java.awt.Dimension(44, 44));
+					jToggleButtonPoints.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/grid.png")));
 				}
 				{
 					jToggleButtonCells = new JToggleButton();
