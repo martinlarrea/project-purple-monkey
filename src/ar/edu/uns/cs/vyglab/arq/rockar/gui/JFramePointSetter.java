@@ -1,17 +1,27 @@
 package ar.edu.uns.cs.vyglab.arq.rockar.gui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
+
+import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
 
 
 /**
@@ -34,6 +44,12 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	private JToggleButton jToggleButtonSelectedCell;
 	private JButton jButtonAbout;
 	private JButton jButtonExit;
+	private JLabel jLabelImage;
+	private JScrollPane jScrollPaneImage;
+	private JTextField jTextFieldKey;
+	private JLabel jLabelMineralKey;
+	private JPanel jPanelKeyInput;
+	private JSeparator jSeparator7;
 	private JSeparator jSeparator6;
 	private JButton jButtonHelp;
 	private JButton jButtonLangChooser;
@@ -67,6 +83,13 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	private void initGUI() {
 		try {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/splash/purple-monkey32.png")).getImage());
+			this.setTitle("Rock.AR v2.0");
+			this.addWindowListener(new WindowAdapter() {
+				public void windowClosed(WindowEvent evt) {
+					thisWindowClosed(evt);
+				}
+			});
 			{
 				jToolBar = new JToolBar();
 				jToolBar.setLayout( new FlowLayout(FlowLayout.LEFT));
@@ -92,7 +115,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jToolBar.add(jSeparator1);
 					jSeparator1.setOrientation(SwingConstants.VERTICAL);
 					jSeparator1.setSize(44, 44);
-					jSeparator1.setPreferredSize(new java.awt.Dimension(44, 44));
+					jSeparator1.setPreferredSize(new java.awt.Dimension(10, 44));
 				}
 				{
 					jButtonZoomIn = new JButton();
@@ -113,7 +136,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jSeparator2 = new JSeparator();
 					jToolBar.add(jSeparator2);
 					jSeparator2.setOrientation(SwingConstants.VERTICAL);
-					jSeparator2.setPreferredSize(new java.awt.Dimension(44, 44));
+					jSeparator2.setPreferredSize(new java.awt.Dimension(10, 44));
 				}
 				{
 					jToggleButtonPoints = new JToggleButton();
@@ -121,30 +144,37 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jToggleButtonPoints.setSize(44, 44);
 					jToggleButtonPoints.setPreferredSize(new java.awt.Dimension(44, 44));
 					jToggleButtonPoints.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/grid.png")));
+					jToggleButtonPoints.setSelected(true);
 				}
 				{
 					jToggleButtonCells = new JToggleButton();
 					jToolBar.add(jToggleButtonCells);
 					jToggleButtonCells.setPreferredSize(new java.awt.Dimension(44, 44));
 					jToggleButtonCells.setSize(44, 44);
+					jToggleButtonCells.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/cells.png")));
+					jToggleButtonCells.setSelected(true);
 				}
 				{
 					jToggleButtonSelectedPoint = new JToggleButton();
 					jToolBar.add(jToggleButtonSelectedPoint);
 					jToggleButtonSelectedPoint.setPreferredSize(new java.awt.Dimension(44, 44));
 					jToggleButtonSelectedPoint.setSize(44, 44);
+					jToggleButtonSelectedPoint.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/selectedPoint.png")));
+					jToggleButtonSelectedPoint.setSelected(true);
 				}
 				{
 					jToggleButtonSelectedCell = new JToggleButton();
 					jToolBar.add(jToggleButtonSelectedCell);
 					jToggleButtonSelectedCell.setPreferredSize(new java.awt.Dimension(44, 44));
 					jToggleButtonSelectedCell.setSize(44, 44);
+					jToggleButtonSelectedCell.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/selectedCell.png")));
+					jToggleButtonSelectedCell.setSelected(true);
 				}
 				{
 					jSeparator3 = new JSeparator();
 					jToolBar.add(jSeparator3);
 					jSeparator3.setOrientation(SwingConstants.VERTICAL);
-					jSeparator3.setPreferredSize(new java.awt.Dimension(44, 44));
+					jSeparator3.setPreferredSize(new java.awt.Dimension(10, 44));
 				}
 				{
 					jButtonColorConfig = new JButton();
@@ -155,28 +185,37 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jSeparator4 = new JSeparator();
 					jToolBar.add(jSeparator4);
 					jSeparator4.setOrientation(SwingConstants.VERTICAL);
-					jSeparator4.setPreferredSize(new java.awt.Dimension(44, 44));
+					jSeparator4.setPreferredSize(new java.awt.Dimension(10, 44));
 				}
 				{
 					jToggleButtonNoShowColor = new JToggleButton();
 					jToolBar.add(jToggleButtonNoShowColor);
 					jToggleButtonNoShowColor.setPreferredSize(new java.awt.Dimension(44, 44));
+					jToggleButtonNoShowColor.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/nocolor.png")));
+					jToggleButtonNoShowColor.setSelected(true);
 				}
 				{
 					jToggleButtonTransparentColor = new JToggleButton();
 					jToolBar.add(jToggleButtonTransparentColor);
 					jToggleButtonTransparentColor.setPreferredSize(new java.awt.Dimension(44, 44));
+					jToggleButtonTransparentColor.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/semitrans.png")));
 				}
 				{
 					jToggleButtonFullColor = new JToggleButton();
 					jToolBar.add(jToggleButtonFullColor);
 					jToggleButtonFullColor.setPreferredSize(new java.awt.Dimension(44, 44));
+					jToggleButtonFullColor.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/fullcolor.png")));
+					
+					ButtonGroup bg = new ButtonGroup();
+					bg.add(this.jToggleButtonFullColor);
+					bg.add(this.jToggleButtonNoShowColor);
+					bg.add(this.jToggleButtonTransparentColor);
 				}
 				{
 					jSeparator5 = new JSeparator();
 					jToolBar.add(jSeparator5);
 					jSeparator5.setOrientation(SwingConstants.VERTICAL);
-					jSeparator5.setPreferredSize(new java.awt.Dimension(44, 44));
+					jSeparator5.setPreferredSize(new java.awt.Dimension(10, 44));
 				}
 				{
 					jButtonLangChooser = new JButton();
@@ -197,12 +236,39 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jSeparator6 = new JSeparator();
 					jToolBar.add(jSeparator6);
 					jSeparator6.setOrientation(SwingConstants.VERTICAL);
-					jSeparator6.setPreferredSize(new java.awt.Dimension(44, 44));
+					jSeparator6.setPreferredSize(new java.awt.Dimension(10, 44));
 				}
 				{
 					jButtonExit = new JButton();
 					jToolBar.add(jButtonExit);
 					jButtonExit.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/exit.png")));
+					jButtonExit.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jButtonExitActionPerformed(evt);
+						}
+					});
+				}
+				{
+					jSeparator7 = new JSeparator();
+					jToolBar.add(jSeparator7);
+					jSeparator7.setPreferredSize(new java.awt.Dimension(10, 44));
+					jSeparator7.setOrientation(SwingConstants.VERTICAL);
+				}
+				{
+					jPanelKeyInput = new JPanel();
+					BoxLayout jPanelKeyInputLayout = new BoxLayout(jPanelKeyInput, javax.swing.BoxLayout.X_AXIS);
+					jPanelKeyInput.setLayout(jPanelKeyInputLayout);
+					jToolBar.add(jPanelKeyInput);
+					{
+						jLabelMineralKey = new JLabel();
+						jPanelKeyInput.add(jLabelMineralKey);
+						jLabelMineralKey.setText("XXX Key:");
+					}
+					{
+						jTextFieldKey = new JTextField();
+						jPanelKeyInput.add(jTextFieldKey);
+						jTextFieldKey.setPreferredSize(new java.awt.Dimension(55, 22));
+					}
 				}
 			}
 			{
@@ -218,12 +284,28 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jLabelInformation.setOpaque(true);
 				}
 			}
+			{
+				jScrollPaneImage = new JScrollPane();
+				getContentPane().add(jScrollPaneImage, BorderLayout.CENTER);
+				{
+					jLabelImage = new JLabel();
+					jScrollPaneImage.setViewportView(jLabelImage);
+				}
+			}
 			pack();
-			this.setSize(800, 300);
+			this.setSize(1200, 400);
 		} catch (Exception e) {
 		    //add your error handling code here
 			e.printStackTrace();
 		}
+	}
+	
+	private void jButtonExitActionPerformed(ActionEvent evt) {
+		DataCenter.exitApp();
+	}
+	
+	private void thisWindowClosed(WindowEvent evt) {
+		DataCenter.exitApp();
 	}
 
 }

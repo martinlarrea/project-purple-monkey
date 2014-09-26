@@ -3,6 +3,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
+import ar.edu.uns.cs.vyglab.arq.rockar.gui.JFrameControlPanel;
 import ar.edu.uns.cs.vyglab.arq.rockar.gui.JFramePointSetter;
 import ar.edu.uns.cs.vyglab.arq.rockar.splash.SplashScreen;
 import ar.edu.uns.cs.vyglab.util.Reporter;
@@ -23,6 +24,12 @@ public class Main {
 		
 		JFramePointSetter jp = new JFramePointSetter();
 		jp.setVisible(true);
+		
+		JFrameControlPanel cp = new JFrameControlPanel();
+		cp.setVisible(true);
+		
+		DataCenter.jframeControl = cp;
+		DataCenter.jframeSetter = jp;
 		
 	}
 

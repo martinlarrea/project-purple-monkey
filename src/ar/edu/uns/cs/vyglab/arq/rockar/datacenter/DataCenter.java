@@ -46,6 +46,12 @@ public class DataCenter {
 	 */
 	public static void end() {
 		
+	}
+
+	public static void exitApp() {
+		DataCenter.jframeControl.dispose();
+		DataCenter.jframeSetter.dispose();
+		System.exit(0);
 	}	
 	
 }
