@@ -1,39 +1,41 @@
 Menú Ventana Input
 >>>
-Nuevo Trabajo
-Abrir Trabajo
-Guardar Trabajo
+x Nuevo Trabajo
+x Abrir Trabajo
+x Guardar Trabajo
 >>>
-Zoom in
-Zoom out
-Zoom reset
+x Zoom in
+x Zoom out
+x Zoom reset
 >>>
 Ver/Ocultar puntos
 Ver/Ocultar celdas
 Ver/Ocultar punto seleccionado
 Ver/Ocultar celda seleccionada
 >>>
-Configurar Colores Puntos Celdas
+x Configurar Colores Puntos Celdas
 >>>
 No mostrar color de puntos cargados
 Mostrar color de puntos cargados con transparencia
 Mostrar color de puntos cargados con color full
 >>>
-Seleccionar Idioma
-About
-Ayuda
+x Seleccionar Idioma
+x About
+x Ayuda
+>>>
+x Salir
 >>>
 
 
 Menu Tabla Minerales
 >>>
-Nueva
-Abrir
-Guardar
+x Nueva
+x Abrir
+x Guardar
 >>>
-Agregar mineral
-Editar mineral
-Eliminar mineral
+x Agregar mineral
+x Editar mineral
+x Eliminar mineral
 >>>
 
 
@@ -45,7 +47,7 @@ Exportar imagen como png
 
 Menu Estadistica
 >>>
-Exportar gráfico como png
+x Exportar gráfico como png
 Exportar resutlados como excel
 Exportar listado completo de puntos como excel
 >>>
