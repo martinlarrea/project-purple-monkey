@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
+import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.ImageSample;
 import ar.edu.uns.cs.vyglab.util.ImageScaler;
 
 
@@ -52,7 +53,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	private JToggleButton jToggleButtonSelectedCell;
 	private JButton jButtonAbout;
 	private JButton jButtonExit;
-	private JLabel jLabelImage;
+	private ImageSample jLabelImage;
 	private JScrollPane jScrollPaneImage;
 	private JTextField jTextFieldKey;
 	private JLabel jLabelMineralKey;
@@ -318,7 +319,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				jScrollPaneImage = new JScrollPane();
 				getContentPane().add(jScrollPaneImage, BorderLayout.CENTER);
 				{
-					jLabelImage = new JLabel();
+					jLabelImage = new ImageSample();
 					jScrollPaneImage.setViewportView(jLabelImage);
 				}
 			}
