@@ -1,10 +1,13 @@
 package ar.edu.uns.cs.vyglab.arq.rockar.gui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.swing.BoxLayout;
@@ -26,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
+import ar.edu.uns.cs.vyglab.util.ImageScaler;
 
 
 /**
@@ -74,6 +78,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	private JButton jButtonSaveWork;
 	private JButton jButtonOpenWork;
 	private JButton jButtonNewWork;
+	private int currentZoom = 1;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -128,16 +133,32 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jButtonZoomIn = new JButton();
+					jButtonZoomIn.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent arg0) {
+							zoomIn();
+						}
+					});
 					jToolBar.add(jButtonZoomIn);
 					jButtonZoomIn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/zoom-in.png")));
 				}
 				{
 					jButtonZoomOut = new JButton();
+					jButtonZoomOut.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							zoomOut();
+						}
+					});
 					jToolBar.add(jButtonZoomOut);
 					jButtonZoomOut.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/zoom-out.png")));
+					jButtonZoomOut.setEnabled(false);
 				}
 				{
 					jButtonZoomReset = new JButton();
+					jButtonZoomReset.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							zoomReset();
+						}
+					});
 					jToolBar.add(jButtonZoomReset);
 					jButtonZoomReset.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/resetzoom.png")));
 				}
@@ -309,7 +330,47 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		}
 	}
 	
+	protected void zoomReset() {
+		this.currentZoom = 1;
+		this.jButtonZoomOut.setEnabled(false);
+		this.applyZoom(this.currentZoom);
+	}
+
+	protected void zoomOut() {
+		if(this.currentZoom > 1) {
+			this.currentZoom--;
+			this.applyZoom(this.currentZoom);
+		}
+		if(this.currentZoom == 1) {
+			this.jButtonZoomOut.setEnabled(false);
+		}
+	}
+
+	private void applyZoom(int currentZoom) {
+		if( currentZoom == 1) {
+			this.jLabelImage.setIcon( DataCenter.sampleImage );
+		} else {
+			this.jLabelImage.setIcon(null);
+			int newWidth = DataCenter.sampleImage.getIconWidth() * currentZoom;
+			int newHeight = DataCenter.sampleImage.getIconHeight() * currentZoom;
+			BufferedImage bi = new BufferedImage( DataCenter.sampleImage.getIconWidth(), 
+					DataCenter.sampleImage.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+			Graphics g = bi.createGraphics();
+			DataCenter.sampleImage.paintIcon(null, g, 0, 0);
+			Image scaledImage = ImageScaler.getScaledInstance(bi , newWidth, newHeight);
+			this.jLabelImage.setIcon( new ImageIcon(scaledImage));
+		}
+	}
+
+	protected void zoomIn() {
+		this.currentZoom++;
+		this.applyZoom(this.currentZoom);
+		this.jButtonZoomOut.setEnabled(true);
+
+	}
+
 	protected void newWork() {
+		this.resetGUI();
 		File currentDir = new File( System.getProperty("user.dir") );
 		JFileChooser openD = new JFileChooser(currentDir);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "jpg");
@@ -321,6 +382,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 			DataCenter.sampleImage = new ImageIcon(DataCenter.samplePath);
 			this.jLabelImage.setIcon(DataCenter.sampleImage);
 		}
+	}
+
+	private void resetGUI() {
+		this.jButtonZoomOut.setEnabled(false);
+		this.currentZoom = 1;
 	}
 
 	private void jButtonExitActionPerformed(ActionEvent evt) {
