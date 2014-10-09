@@ -88,8 +88,32 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	public JFramePointSetter() {
 		super();
 		initGUI();
+		loadLanguage();
 	}
 	
+	public void loadLanguage() {
+		this.jLabelInformation.setText(DataCenter.langResource.getString("main_information_label"));
+		this.jButtonNewWork.setToolTipText(DataCenter.langResource.getString("mainnew_button_tooltip"));
+		this.jButtonOpenWork.setToolTipText(DataCenter.langResource.getString("mainopen_button_tooltip"));
+		this.jButtonSaveWork.setToolTipText(DataCenter.langResource.getString("mainsave_button_tooltip"));
+		this.jButtonZoomIn.setToolTipText(DataCenter.langResource.getString("zoomin_button_tooltip"));
+		this.jButtonZoomOut.setToolTipText(DataCenter.langResource.getString("zoomout_button_tooltip"));
+		this.jButtonZoomReset.setToolTipText(DataCenter.langResource.getString("zoomreset_button_tooltip"));
+		this.jToggleButtonCells.setToolTipText(DataCenter.langResource.getString("grids_tooltip"));
+		this.jToggleButtonPoints.setToolTipText(DataCenter.langResource.getString("points_tooltip"));
+		this.jToggleButtonSelectedCell.setToolTipText(DataCenter.langResource.getString("grid_tooltip"));
+		this.jToggleButtonSelectedPoint.setToolTipText(DataCenter.langResource.getString("point_tooltip"));
+		this.jButtonColorConfig.setToolTipText(DataCenter.langResource.getString("maincolors_tooltip"));
+		this.jToggleButtonFullColor.setToolTipText(DataCenter.langResource.getString("fullshow_tooltip"));
+		this.jToggleButtonNoShowColor.setToolTipText(DataCenter.langResource.getString("noshow_tooltip"));
+		this.jToggleButtonTransparentColor.setToolTipText(DataCenter.langResource.getString("semishow_tooltip"));
+		this.jButtonLangChooser.setToolTipText(DataCenter.langResource.getString("lang_tooltip"));
+		this.jButtonAbout.setToolTipText(DataCenter.langResource.getString("about_tooltip"));
+		this.jButtonHelp.setToolTipText(DataCenter.langResource.getString("help_tooltip"));
+		this.jButtonExit.setToolTipText(DataCenter.langResource.getString("exit_tooltip"));
+		this.jLabelMineralKey.setText(DataCenter.langResource.getString("key"));
+	}
+
 	private void initGUI() {
 		try {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -273,6 +297,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jButtonLangChooser = new JButton();
 					jToolBar.add(jButtonLangChooser);
 					jButtonLangChooser.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/1411756268_config-language.png")));
+					jButtonLangChooser.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jButtonLangChooserActionPerformed(evt);
+						}
+					});
 				}
 				{
 					jButtonAbout = new JButton();
@@ -439,6 +468,15 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	
 	private void updateSampleImage() {
 		this.jLabelImage.repaint();
+	}
+	
+	private void jButtonLangChooserActionPerformed(ActionEvent evt) {
+		this.languageDialog();
+	}
+
+	private void languageDialog() {
+		JDialogLangChooser dLang = new JDialogLangChooser(this);
+		dLang.setVisible(true);
 	}
 
 }

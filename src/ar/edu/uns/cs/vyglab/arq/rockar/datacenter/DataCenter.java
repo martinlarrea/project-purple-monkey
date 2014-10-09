@@ -98,5 +98,11 @@ public class DataCenter {
 	public static Color getFillColor( Point p ) {
 		return Color.white;
 	}
+
+	public static void updateLanguages() {
+		DataCenter.jframeSetter.loadLanguage();
+		DataCenter.jframeControl.loadLanguage();
+		
+	}
 	
 }

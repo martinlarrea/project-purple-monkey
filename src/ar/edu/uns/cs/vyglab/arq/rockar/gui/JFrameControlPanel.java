@@ -263,4 +263,9 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 
 	}
 
+	public void loadLanguage() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
