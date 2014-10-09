@@ -27,6 +27,7 @@ import javax.swing.table.TableModel;
 import javax.swing.SwingUtilities;
 
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
+
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
@@ -76,6 +77,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		super();
 		initGUI();
 		initCustomGUI();
+		loadLanguage();
 	}
 	
 	private void initCustomGUI() {
@@ -183,8 +185,13 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 						{
 							TableModel jTableMineralsModel = 
 									new DefaultTableModel(
-											new String[][] { { "One", "Two" }, { "Three", "Four" } },
-											new String[] { "Column 1", "Column 2" });
+											new String[][] { { "One", "Two", "X","X","X"}, { "Three", "Four","X","X","X" } },
+											new String[] {
+													"XKey Value",
+													"XName",
+													"XColor",
+													"XCounted Points",
+													"XRelative Area" });
 							jTableMinerals = new JTable();
 							jScrollPaneMineralTable.setViewportView(jTableMinerals);
 							jTableMinerals.setModel(jTableMineralsModel);
@@ -264,8 +271,17 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 	}
 
 	public void loadLanguage() {
-		// TODO Auto-generated method stub
-		
+		this.jTableMinerals.getTableHeader().getColumnModel().getColumn(0).setHeaderValue(DataCenter.langResource.getString("keyvalue_table"));
+		this.jTableMinerals.getTableHeader().getColumnModel().getColumn(1).setHeaderValue(DataCenter.langResource.getString("name_table"));
+		this.jTableMinerals.getTableHeader().getColumnModel().getColumn(2).setHeaderValue(DataCenter.langResource.getString("color_table"));
+		this.jTableMinerals.getTableHeader().getColumnModel().getColumn(3).setHeaderValue(DataCenter.langResource.getString("counted_table"));
+		this.jTableMinerals.getTableHeader().getColumnModel().getColumn(4).setHeaderValue(DataCenter.langResource.getString("area_table"));
+		this.jButtonAdd.setToolTipText(DataCenter.langResource.getString("newmineral_tooltip"));
+		this.jButtonEdit.setToolTipText(DataCenter.langResource.getString("editmineral_tooltip"));
+		this.jButtonRemove.setToolTipText(DataCenter.langResource.getString("removemineral_tooltip"));
+		this.jButtonNew.setToolTipText(DataCenter.langResource.getString("newtable_tooltip"));
+		this.jButtonOpen.setToolTipText(DataCenter.langResource.getString("opentable_tooltip"));
+		this.jButtonSave.setToolTipText(DataCenter.langResource.getString("savetable_tooltip"));
 	}
 
 }
