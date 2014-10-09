@@ -1,5 +1,6 @@
 package ar.edu.uns.cs.vyglab.arq.rockar.datacenter;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.io.File;
 import java.util.HashMap;
@@ -53,5 +54,49 @@ public class DataCenter {
 		DataCenter.jframeSetter.dispose();
 		System.exit(0);
 	}	
+	
+	public static boolean showGrids() {
+		if( DataCenter.jframeSetter != null ) {
+			return DataCenter.jframeSetter.showGrids();
+		} else {
+			return false;
+		}
+	}
+	
+	public static boolean showPoints() {
+		if( DataCenter.jframeSetter != null ) {
+			return DataCenter.jframeSetter.showPoints();
+		} else {
+			return false;
+		}
+	}
+	
+	public static boolean showSelectedGrid() {
+		return true;
+	}
+	
+	public static boolean showSelectedPoint() {
+		return true;
+	}
+	
+	public static Color getGridsColor() {
+		return Color.blue;
+	}
+	
+	public static  Color getPointsColor() {
+		return Color.green;
+	}
+	
+	public static Color getSelectedGridColor() {
+		return Color.red;
+	}
+	
+	public static Color getSelectedPointColor() {
+		return Color.red;
+	}
+	
+	public static Color getFillColor( Point p ) {
+		return Color.white;
+	}
 	
 }

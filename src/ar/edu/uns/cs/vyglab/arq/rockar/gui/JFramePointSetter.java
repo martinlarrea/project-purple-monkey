@@ -176,6 +176,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jToggleButtonPoints.setPreferredSize(new java.awt.Dimension(44, 44));
 					jToggleButtonPoints.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/grid.png")));
 					jToggleButtonPoints.setSelected(true);
+					jToggleButtonPoints.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jToggleButtonCellsActionPerformed(evt);
+						}
+					});
 				}
 				{
 					jToggleButtonCells = new JToggleButton();
@@ -184,6 +189,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jToggleButtonCells.setSize(44, 44);
 					jToggleButtonCells.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/cells.png")));
 					jToggleButtonCells.setSelected(true);
+					jToggleButtonCells.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jToggleButtonCellsActionPerformed(evt);
+						}
+					});
 				}
 				{
 					jToggleButtonSelectedPoint = new JToggleButton();
@@ -192,6 +202,12 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jToggleButtonSelectedPoint.setSize(44, 44);
 					jToggleButtonSelectedPoint.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/selectedPoint.png")));
 					jToggleButtonSelectedPoint.setSelected(true);
+					jToggleButtonSelectedPoint.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jToggleButtonCellsActionPerformed(evt);
+						}
+					});
+					
 				}
 				{
 					jToggleButtonSelectedCell = new JToggleButton();
@@ -200,6 +216,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jToggleButtonSelectedCell.setSize(44, 44);
 					jToggleButtonSelectedCell.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/selectedCell.png")));
 					jToggleButtonSelectedCell.setSelected(true);
+					jToggleButtonSelectedCell.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jToggleButtonCellsActionPerformed(evt);
+						}
+					});
 				}
 				{
 					jSeparator3 = new JSeparator();
@@ -381,7 +402,13 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		if( file != null ) {
 			DataCenter.samplePath = file.getAbsolutePath();
 			DataCenter.sampleImage = new ImageIcon(DataCenter.samplePath);
+			DataCenter.jframeSetter = this;
 			this.jLabelImage.setIcon(DataCenter.sampleImage);
+			
+			//
+			this.jLabelImage.sethPoints(90);
+			this.jLabelImage.setvPoints(90);
+			this.jLabelImage.setPointSize(10);
 		}
 	}
 
@@ -396,6 +423,22 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	
 	private void thisWindowClosed(WindowEvent evt) {
 		DataCenter.exitApp();
+	}
+	
+	public boolean showGrids() {
+		return this.jToggleButtonCells.isSelected();
+	}
+	
+	public boolean showPoints() {
+		return this.jToggleButtonPoints.isSelected();
+	}
+	
+	private void jToggleButtonCellsActionPerformed(ActionEvent evt) {
+		this.updateSampleImage();
+	}
+	
+	private void updateSampleImage() {
+		this.jLabelImage.repaint();
 	}
 
 }
