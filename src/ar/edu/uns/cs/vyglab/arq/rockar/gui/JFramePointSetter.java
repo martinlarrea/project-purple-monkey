@@ -30,6 +30,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.ImageSample;
+import ar.edu.uns.cs.vyglab.java.util.IntegerTextField;
 import ar.edu.uns.cs.vyglab.util.ImageScaler;
 
 
@@ -346,9 +347,10 @@ public class JFramePointSetter extends javax.swing.JFrame {
 						jLabelMineralKey.setText("XXX Key:");
 					}
 					{
-						jTextFieldKey = new JTextField();
+						jTextFieldKey = new IntegerTextField();
 						jPanelKeyInput.add(jTextFieldKey);
 						jTextFieldKey.setPreferredSize(new java.awt.Dimension(55, 22));
+						jTextFieldKey.setHorizontalAlignment(SwingConstants.CENTER);
 					}
 				}
 			}

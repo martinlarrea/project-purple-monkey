@@ -317,6 +317,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		this.jTableMinerals.getTableHeader().getColumnModel().getColumn(2).setHeaderValue(DataCenter.langResource.getString("color_table"));
 		this.jTableMinerals.getTableHeader().getColumnModel().getColumn(3).setHeaderValue(DataCenter.langResource.getString("counted_table"));
 		this.jTableMinerals.getTableHeader().getColumnModel().getColumn(4).setHeaderValue(DataCenter.langResource.getString("area_table"));
+		this.jTableMinerals.updateUI();
 		this.jButtonAdd.setToolTipText(DataCenter.langResource.getString("newmineral_tooltip"));
 		this.jButtonEdit.setToolTipText(DataCenter.langResource.getString("editmineral_tooltip"));
 		this.jButtonRemove.setToolTipText(DataCenter.langResource.getString("removemineral_tooltip"));

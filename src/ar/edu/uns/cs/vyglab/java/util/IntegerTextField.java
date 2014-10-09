@@ -3,6 +3,9 @@ package ar.edu.uns.cs.vyglab.java.util;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.text.*;
+
+import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
+
 import java.text.*;
  
 public class IntegerTextField extends JTextField
@@ -110,9 +113,10 @@ public class IntegerTextField extends JTextField
 					try
 					{
 						typedValue = Long.parseLong(textValue);
+						//TODO cambiar la condición a "es una clave existente"
 						if((typedValue > maxValue) || (typedValue < minValue))
 						{
-							JOptionPane.showMessageDialog(IntegerTextField.this, "The value can only be from "+getMinValue()+" to " + getMaxValue(), "Error Message", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(IntegerTextField.this, DataCenter.langResource.getString("nokey_error"), "Error", JOptionPane.ERROR_MESSAGE);
 						}
 						else
 						{
@@ -122,7 +126,7 @@ public class IntegerTextField extends JTextField
 					catch(NumberFormatException ex)
 					{
 						Toolkit.getDefaultToolkit().beep();
-						JOptionPane.showMessageDialog(IntegerTextField.this, "Only numeric values allowed.", "Error Message", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(IntegerTextField.this, DataCenter.langResource.getString("numeric_error"), "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 		}
