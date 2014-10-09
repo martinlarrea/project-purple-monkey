@@ -1,8 +1,11 @@
 package ar.edu.uns.cs.vyglab.arq.rockar.gui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
@@ -12,6 +15,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -23,10 +27,17 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.SwingUtilities;
 
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
+import ar.edu.uns.cs.vyglab.java.util.CenterRenderer;
+import ar.edu.uns.cs.vyglab.javax.swing.JReadOnlyTable;
+import ar.edu.uns.cs.vyglab.javax.table.RockTableModel;
+import ar.edu.uns.cs.vyglab.javax.table.cell.ColorRenderer;
+import ar.edu.uns.cs.vyglab.util.Reporter;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -68,6 +79,8 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 	private JPanel jPanelEast;
 	private JPanel jPanelWest;
 	private JPanel jPanelCenter;
+	private RockTableModel jTableMineralsModel;
+	private int lowestKeyAvaiable = 1;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -159,16 +172,31 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 							jButtonAdd = new JButton();
 							jToolBarMineralTable.add(jButtonAdd);
 							jButtonAdd.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/add.png")));
+							jButtonAdd.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent evt) {
+									jButtonAddActionPerformed(evt);
+								}
+							});
 						}
 						{
 							jButtonEdit = new JButton();
 							jToolBarMineralTable.add(jButtonEdit);
 							jButtonEdit.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/modify.png")));
+							jButtonEdit.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent evt) {
+									jButtonEditActionPerformed(evt);
+								}
+							});
 						}
 						{
 							jButtonRemove = new JButton();
 							jToolBarMineralTable.add(jButtonRemove);
 							jButtonRemove.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/remove.png")));
+							jButtonRemove.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent evt) {
+									jButtonRemoveActionPerformed(evt);
+								}
+							});
 						}
 					}
 					{
@@ -183,18 +211,31 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 						jScrollPaneMineralTable = new JScrollPane();
 						jPanelWest.add(jScrollPaneMineralTable, BorderLayout.CENTER);
 						{
-							TableModel jTableMineralsModel = 
-									new DefaultTableModel(
-											new String[][] { { "One", "Two", "X","X","X"}, { "Three", "Four","X","X","X" } },
+							jTableMineralsModel = 
+									new RockTableModel(
 											new String[] {
 													"XKey Value",
 													"XName",
 													"XColor",
 													"XCounted Points",
-													"XRelative Area" });
-							jTableMinerals = new JTable();
+													"XRelative Area" }, 0);
+//							jTableMineralsModel.addRow(new Object[] {
+//									0, "x?", Color.gray, 0,
+//									"0.00" });
+							jTableMinerals = new JReadOnlyTable();
 							jScrollPaneMineralTable.setViewportView(jTableMinerals);
 							jTableMinerals.setModel(jTableMineralsModel);
+							jTableMinerals.setDefaultRenderer(Color.class, new ColorRenderer(true));
+							TableCellRenderer centerRenderer = new CenterRenderer();
+							TableColumn column = jTableMinerals.getColumnModel().getColumn(0);
+					        column.setCellRenderer( centerRenderer );
+					        column = jTableMinerals.getColumnModel().getColumn(1);
+					        column.setCellRenderer( centerRenderer );
+					        column = jTableMinerals.getColumnModel().getColumn(3);
+					        column.setCellRenderer( centerRenderer );
+					        column = jTableMinerals.getColumnModel().getColumn(4);
+					        column.setCellRenderer( centerRenderer );
+
 						}
 					}
 				}
@@ -282,6 +323,42 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		this.jButtonNew.setToolTipText(DataCenter.langResource.getString("newtable_tooltip"));
 		this.jButtonOpen.setToolTipText(DataCenter.langResource.getString("opentable_tooltip"));
 		this.jButtonSave.setToolTipText(DataCenter.langResource.getString("savetable_tooltip"));
+	}
+	
+	private void jButtonRemoveActionPerformed(ActionEvent evt) {
+		int row = this.jTableMinerals.getSelectedRow();
+		if( row != -1 ) {
+			int response = JOptionPane.showConfirmDialog(this, DataCenter.langResource.getString("remove_mineral_conf"));
+			if( response == JOptionPane.YES_OPTION ) {
+				int key = (Integer)this.jTableMineralsModel.getValueAt(row, 0);
+				this.jTableMineralsModel.removeRow(response);
+				DataCenter.minerals.remove(key);
+				if( DataCenter.points.containsValue(key) ) {
+					//TODO algo...
+				}
+			}
+		}
+	}
+
+	/**
+	 * @return the lowestKeyAvaiable
+	 */
+	public int getLowestKeyAvaiable() {
+		return lowestKeyAvaiable;
+	}
+
+	public void increaseLowestKeyAvaiable() {
+		this.lowestKeyAvaiable++;
+	}
+	
+	private void jButtonAddActionPerformed(ActionEvent evt) {
+		JDialogMineral jdm = new JDialogMineral(this);
+		jdm.setVisible(true);
+	}
+	
+	private void jButtonEditActionPerformed(ActionEvent evt) {
+		JDialogMineral jdm = new JDialogMineral(this, this.jTableMinerals.getSelectedRow());
+		jdm.setVisible(true);
 	}
 
 }
