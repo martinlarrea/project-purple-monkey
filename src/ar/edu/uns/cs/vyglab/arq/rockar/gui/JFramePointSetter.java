@@ -5,6 +5,10 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -351,6 +355,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 						jPanelKeyInput.add(jTextFieldKey);
 						jTextFieldKey.setPreferredSize(new java.awt.Dimension(55, 22));
 						jTextFieldKey.setHorizontalAlignment(SwingConstants.CENTER);
+						jTextFieldKey.addKeyListener(new KeyAdapter() {
+							public void keyPressed(KeyEvent evt) {
+								jTextFieldKeyKeyPressed(evt);
+							}
+						});
 					}
 				}
 			}
@@ -373,6 +382,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				{
 					jLabelImage = new ImageSample();
 					jScrollPaneImage.setViewportView(jLabelImage);
+					jLabelImage.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent evt) {
+							jLabelImageMouseClicked(evt);
+						}
+					});
 				}
 			}
 			pack();
@@ -479,6 +493,46 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	private void languageDialog() {
 		JDialogLangChooser dLang = new JDialogLangChooser(this);
 		dLang.setVisible(true);
+	}
+	
+	private void jLabelImageMouseClicked(MouseEvent evt) {
+		if( DataCenter.sampleImage != null ) {
+			System.out.println("jLabelImage.mouseClicked, event="+evt);
+			this.sampleClick( evt.getX(), evt.getY() );
+			this.jTextFieldKey.requestFocus();
+		}
+	}
+
+	private void sampleClick(int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void jTextFieldKeyKeyPressed(KeyEvent evt) {
+		if(this.validate(this.jTextFieldKey.getText()) ) {
+			switch(evt.getKeyCode()) {
+			case(KeyEvent.VK_UP) : {
+				break;
+				}
+			case(KeyEvent.VK_DOWN) : {
+				break;
+				}
+			case(KeyEvent.VK_LEFT) : {
+				break;
+				}
+			case(KeyEvent.VK_RIGHT) : {
+				break;
+				}
+			case(KeyEvent.VK_ENTER) : {
+				break;
+				}
+			}
+		}
+	}
+
+	private boolean validate(String text) {
+		int key = Integer.parseInt(text);
+		return DataCenter.minerals.containsKey(key);		
 	}
 
 }

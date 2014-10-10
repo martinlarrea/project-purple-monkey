@@ -10,8 +10,11 @@ import javax.swing.SwingUtilities;
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
+
 import javax.swing.JButton;
 
 /**
@@ -143,6 +146,7 @@ public class JDialogMineral extends javax.swing.JDialog {
 		if( modify == -1) {	
 			DataCenter.jframeControl.getjTableMineralsModel().addRow(new Object[] {key, name, color, 0, "0.00%"});		
 			DataCenter.jframeControl.increaseLowestKeyAvaiable();
+			DataCenter.minerals.put(key, new Vector<Point>());
 		} else {
 			DataCenter.jframeControl.getjTableMineralsModel().setValueAt(name, this.modify, 1);
 			DataCenter.jframeControl.getjTableMineralsModel().setValueAt(color, this.modify, 2);

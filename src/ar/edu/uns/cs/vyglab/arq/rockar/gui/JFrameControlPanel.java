@@ -4,6 +4,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -11,6 +12,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -475,6 +478,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 	
 	private void openTable() {
 		this.checkToSave();
+		DataCenter.minerals = new HashMap<Integer, Vector<Point>>();
 		try {
 			File currentDir = new File( System.getProperty("user.dir") );
 			JFileChooser openDialgo = new JFileChooser(currentDir);
@@ -488,18 +492,25 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 				Document doc = dBuilder.parse(fXmlFile);		 
 				doc.getDocumentElement().normalize();
 				NodeList nListMinerals = doc.getElementsByTagName("mineral");
+				int maxKey = 0;
 				for( int i = 0; i < nListMinerals.getLength(); i++ ) {
 					Element mineral = (Element)nListMinerals.item(i);
 					String key = mineral.getAttribute("key");
 					String name = mineral.getAttribute("name");
 					String scolor = mineral.getAttribute("color");
 					Color color = new Color(Integer.parseInt(scolor));					
-					this.jTableMineralsModel.addRow(new Object[]{key, name, color, 0, "0.00%"});
+					this.jTableMineralsModel.addRow(new Object[]{Integer.parseInt(key), name, color, 0, "0.00%"});
+					DataCenter.minerals.put(Integer.parseInt(key), new Vector<Point>());
+					if( maxKey < Integer.parseInt(key) ) {
+						maxKey = Integer.parseInt(key);
+					}
 				}
+				this.lowestKeyAvaiable = maxKey + 1;
 			}
 		} catch( Exception e ) {
 			
 		}
+		
 		
 	}
 	
