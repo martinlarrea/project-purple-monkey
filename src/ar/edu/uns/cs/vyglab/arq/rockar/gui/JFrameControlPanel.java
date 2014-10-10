@@ -10,10 +10,13 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -26,11 +29,23 @@ import javax.swing.SwingConstants;
 
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.SwingUtilities;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
 import ar.edu.uns.cs.vyglab.java.util.CenterRenderer;
@@ -150,16 +165,31 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 							jButtonNew = new JButton();
 							jToolBarMineralTable.add(jButtonNew);
 							jButtonNew.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/Actions-tab-new-icon.png")));
+							jButtonNew.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent evt) {
+									jButtonNewActionPerformed(evt);
+								}
+							});
 						}
 						{
 							jButtonOpen = new JButton();
 							jToolBarMineralTable.add(jButtonOpen);
 							jButtonOpen.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/open.png")));
+							jButtonOpen.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent evt) {
+									jButtonOpenActionPerformed(evt);
+								}
+							});
 						}
 						{
 							jButtonSave = new JButton();
 							jToolBarMineralTable.add(jButtonSave);
 							jButtonSave.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/save.png")));
+							jButtonSave.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent evt) {
+									jButtonSaveActionPerformed(evt);
+								}
+							});
 						}
 						{
 							jSeparator1 = new JSeparator();
@@ -333,7 +363,9 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 			if( response == JOptionPane.YES_OPTION ) {
 				int key = (Integer)this.jTableMineralsModel.getValueAt(row, 0);
 				this.jTableMineralsModel.removeRow(response);
-				DataCenter.minerals.remove(key);
+				if( DataCenter.minerals.containsKey(key) ){
+					DataCenter.minerals.remove(key);
+				}
 				if( DataCenter.points.containsValue(key) ) {
 					//TODO algo...
 				}
@@ -360,6 +392,133 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 	private void jButtonEditActionPerformed(ActionEvent evt) {
 		JDialogMineral jdm = new JDialogMineral(this, this.jTableMinerals.getSelectedRow());
 		jdm.setVisible(true);
+	}
+
+	/**
+	 * @return the jTableMineralsModel
+	 */
+	public RockTableModel getjTableMineralsModel() {
+		return jTableMineralsModel;
+	}
+
+	/**
+	 * @param jTableMineralsModel the jTableMineralsModel to set
+	 */
+	public void setjTableMineralsModel(RockTableModel jTableMineralsModel) {
+		this.jTableMineralsModel = jTableMineralsModel;
+	}
+	
+	private void jButtonNewActionPerformed(ActionEvent evt) {
+		this.newTable();
+	}
+	
+	private void jButtonOpenActionPerformed(ActionEvent evt) {
+		this.openTable();
+	}
+	
+	private void jButtonSaveActionPerformed(ActionEvent evt) {
+		this.saveTable();
+	}
+
+	private void saveTable() {
+		File currentDir = new File( System.getProperty("user.dir") );
+		JFileChooser saveDialog = new JFileChooser(currentDir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("MTF File", "mtf", "mtf");		
+		saveDialog.setFileFilter(filter);
+		int response = saveDialog.showSaveDialog(this);
+		if( response == saveDialog.APPROVE_OPTION ) {
+			File file = saveDialog.getSelectedFile();
+			try{
+				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+				// root elements
+				Document doc = docBuilder.newDocument();
+				Element rootElement = doc.createElement("table");
+				doc.appendChild(rootElement);
+				
+				// para cada mineral en la tabla de minerales, agrego un Element
+				for( int i = 0; i < this.jTableMineralsModel.getRowCount(); i++ ) {
+					Element mineral = doc.createElement("mineral");
+					
+					// set attribute id to mineral element
+					Attr attr = doc.createAttribute("key");
+					//attr.setValue(this.jTableMinerales.getModel().getValueAt(i, 0).toString());
+					attr.setValue(this.jTableMineralsModel.getValueAt(i, 0).toString());
+					mineral.setAttributeNode(attr);
+					
+					// set attribute name to mineral element
+					attr = doc.createAttribute("name");
+					attr.setValue(this.jTableMineralsModel.getValueAt(i, 1).toString());
+					mineral.setAttributeNode(attr);
+
+					
+					// set attribute color to mineral element
+					attr = doc.createAttribute("color");
+					attr.setValue(String.valueOf( ((Color)this.jTableMineralsModel.getValueAt(i, 2)).getRGB()) );
+					mineral.setAttributeNode(attr);
+					
+					// agrego el mineral a los minerales
+					rootElement.appendChild(mineral);
+				}
+				
+				// write the content into xml file
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource source = new DOMSource(doc);
+				StreamResult result = new StreamResult(file);
+		 	 
+				transformer.transform(source, result);
+				
+			} catch( Exception e ) {			}
+		}				
+	}
+	
+	private void openTable() {
+		this.checkToSave();
+		try {
+			File currentDir = new File( System.getProperty("user.dir") );
+			JFileChooser openDialgo = new JFileChooser(currentDir);
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("MTF File", "mtf", "mtf");
+			openDialgo.setFileFilter(filter);
+			int response = openDialgo.showOpenDialog(this);
+			if( response == openDialgo.APPROVE_OPTION ) {
+				File fXmlFile = openDialgo.getSelectedFile();
+				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+				Document doc = dBuilder.parse(fXmlFile);		 
+				doc.getDocumentElement().normalize();
+				NodeList nListMinerals = doc.getElementsByTagName("mineral");
+				for( int i = 0; i < nListMinerals.getLength(); i++ ) {
+					Element mineral = (Element)nListMinerals.item(i);
+					String key = mineral.getAttribute("key");
+					String name = mineral.getAttribute("name");
+					String scolor = mineral.getAttribute("color");
+					Color color = new Color(Integer.parseInt(scolor));					
+					this.jTableMineralsModel.addRow(new Object[]{key, name, color, 0, "0.00%"});
+				}
+			}
+		} catch( Exception e ) {
+			
+		}
+		
+	}
+	
+	private void checkToSave() {
+		if(this.jTableMineralsModel.getRowCount() > 0 ) {
+			int response = JOptionPane.showConfirmDialog(this, DataCenter.langResource.getString("save_mineral_table"));
+			if( response == JOptionPane.YES_OPTION ) {
+				this.saveTable();
+			}
+		}
+	}
+
+	private void newTable() {
+		this.checkToSave();
+		int tope = this.jTableMineralsModel.getRowCount();
+		for( int i = 0; i < tope; i++ ) {
+			this.jTableMineralsModel.removeRow(0);
+		}
+		this.lowestKeyAvaiable = 1;
 	}
 
 }

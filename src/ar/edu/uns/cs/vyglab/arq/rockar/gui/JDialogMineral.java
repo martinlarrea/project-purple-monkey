@@ -35,6 +35,7 @@ public class JDialogMineral extends javax.swing.JDialog {
 	private JButton jButtonColor;
 	private JTextField jTextFieldName;
 	private JLabel jLabelColor;
+	private int modify = -1;
 
 	/**
 	* Auto-generated main method to display this JDialog
@@ -43,16 +44,19 @@ public class JDialogMineral extends javax.swing.JDialog {
 	public JDialogMineral(JFrameControlPanel frame) {
 		super(frame);
 		initGUI();
+		modify = -1;
 	}
 	
 	public JDialogMineral(JFrameControlPanel frame, int key ) {
 		this(frame);
 		loadData( key );
+		modify = key;
 	}
 	
 	private void loadData(int key) {
-		// TODO Auto-generated method stub
-		
+		this.jLabelKeyValueNumber.setText(DataCenter.jframeControl.getjTableMineralsModel().getValueAt(key, 0).toString());
+		this.jTextFieldName.setText(DataCenter.jframeControl.getjTableMineralsModel().getValueAt(key, 1).toString());
+		this.jButtonColor.setBackground((Color)DataCenter.jframeControl.getjTableMineralsModel().getValueAt(key, 2));
 	}
 
 	private void initGUI() {
@@ -133,6 +137,16 @@ public class JDialogMineral extends javax.swing.JDialog {
 	}
 	
 	private void jButtonOkActionPerformed(ActionEvent evt) {
+		int key = Integer.parseInt(this.jLabelKeyValueNumber.getText());
+		String name = this.jTextFieldName.getText();
+		Color color = this.jButtonColor.getBackground();
+		if( modify == -1) {	
+			DataCenter.jframeControl.getjTableMineralsModel().addRow(new Object[] {key, name, color, 0, "0.00%"});		
+			DataCenter.jframeControl.increaseLowestKeyAvaiable();
+		} else {
+			DataCenter.jframeControl.getjTableMineralsModel().setValueAt(name, this.modify, 1);
+			DataCenter.jframeControl.getjTableMineralsModel().setValueAt(color, this.modify, 2);
+		}
 		this.dispose();
 	}
 	

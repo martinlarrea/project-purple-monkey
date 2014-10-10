@@ -1,6 +1,9 @@
 package ar.edu.uns.cs.vyglab.arq.rockar.main;
+import java.awt.Point;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
 import ar.edu.uns.cs.vyglab.arq.rockar.gui.JFrameControlPanel;
@@ -30,6 +33,8 @@ public class Main {
 		
 		DataCenter.jframeControl = cp;
 		DataCenter.jframeSetter = jp;
+		DataCenter.points = new HashMap<Point, Integer>();
+		DataCenter.minerals = new HashMap<Integer, Vector<Point>>();
 		
 	}
 
