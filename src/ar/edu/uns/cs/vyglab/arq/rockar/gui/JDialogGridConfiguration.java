@@ -9,10 +9,13 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
+import ar.edu.uns.cs.vyglab.java.util.IntegerTextField;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.swing.JTextField;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -27,11 +30,10 @@ import java.util.ResourceBundle;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class JDialogGridConfiguration extends javax.swing.JDialog {
-	private JLabel jLabelLangChoose;
-	private JComboBox jComboBoxLangs;
 	private JButton jButtonCancel;
 	private JButton jButtonOk;
 	private JLabel jLabelLang;
+	private JTextField jTextFieldNColumns;
 
 	/**
 	* Auto-generated main method to display this JDialog
@@ -46,35 +48,18 @@ public class JDialogGridConfiguration extends javax.swing.JDialog {
 		try {
 			{
 				getContentPane().setLayout(null);
-				this.setTitle(DataCenter.langResource.getString("lang_dialog_title"));
-				{
-					jLabelLangChoose = new JLabel();
-					getContentPane().add(jLabelLangChoose);
-					jLabelLangChoose.setText(DataCenter.langResource.getString("lang_dialog_available"));
-					jLabelLangChoose.setBounds(12, 12, 366, 24);
-				}
+				this.setTitle(DataCenter.langResource.getString("grid_config_title"));
 				{
 					jLabelLang = new JLabel();
 					getContentPane().add(jLabelLang);
-					jLabelLang.setText(DataCenter.langResource.getString("language_label"));
-					jLabelLang.setBounds(24, 60, 93, 15);
-				}
-				{
-					ComboBoxModel jComboBoxLangsModel = 
-							new DefaultComboBoxModel(
-									new String[] { DataCenter.langResource.getString("lang_english"),
-											DataCenter.langResource.getString("lang_spanish"),
-											DataCenter.langResource.getString("lang_german")});
-					jComboBoxLangs = new JComboBox();
-					getContentPane().add(jComboBoxLangs);
-					jComboBoxLangs.setModel(jComboBoxLangsModel);
-					jComboBoxLangs.setBounds(112, 56, 162, 22);
+					jLabelLang.setText(DataCenter.langResource.getString("grid_config_columns"));
+					jLabelLang.setBounds(12, 12, 226, 15);
 				}
 				{
 					jButtonOk = new JButton();
 					getContentPane().add(jButtonOk);
 					jButtonOk.setText(DataCenter.langResource.getString("ok"));
-					jButtonOk.setBounds(181, 228, 93, 31);
+					jButtonOk.setBounds(277, 228, 93, 31);
 					jButtonOk.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jButtonOkActionPerformed(evt);
@@ -86,6 +71,12 @@ public class JDialogGridConfiguration extends javax.swing.JDialog {
 					getContentPane().add(jButtonCancel);
 					jButtonCancel.setText(DataCenter.langResource.getString("cancel"));
 					jButtonCancel.setBounds(12, 228, 93, 31);
+					{
+						jTextFieldNColumns = new IntegerTextField();
+						jTextFieldNColumns.setBounds(256, 10, 114, 19);
+						getContentPane().add(jTextFieldNColumns);
+						jTextFieldNColumns.setColumns(10);
+					}
 					jButtonCancel.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jButtonCancelActionPerformed(evt);
@@ -93,29 +84,13 @@ public class JDialogGridConfiguration extends javax.swing.JDialog {
 					});
 				}
 			}
-			this.setSize(288, 295);
+			this.setSize(384, 295);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	private void jButtonOkActionPerformed(ActionEvent evt) {
-		switch(this.jComboBoxLangs.getSelectedIndex()) {
-		case 0: {
-				DataCenter.locale = Locale.getDefault();
-			break;
-		}
-		case 1: {
-				DataCenter.locale = new Locale("es", "AR");
-			break;
-		}
-		case 2: {
-				DataCenter.locale = new Locale("de", "DE");
-			break;
-		}		
-		}
-		DataCenter.langResource = ResourceBundle.getBundle("ar.edu.uns.cs.vyglab.arq.rockar.resources.lang.LANG", DataCenter.locale);
-		DataCenter.updateLanguages();
 		this.dispose();
 		
 	}

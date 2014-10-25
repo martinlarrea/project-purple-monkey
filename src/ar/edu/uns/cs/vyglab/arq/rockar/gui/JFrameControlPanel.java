@@ -139,7 +139,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 				{
 					jLabelInformation = new JLabel();
 					jPanelSouth.add(jLabelInformation, BorderLayout.CENTER);
-					jLabelInformation.setText("XXX Information");
+					jLabelInformation.setText(DataCenter.langResource.getString("main_information_label"));
 					jLabelInformation.setOpaque(true);
 					jLabelInformation.setBackground(new java.awt.Color(241,191,101));
 				}
@@ -235,7 +235,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 					{
 						jLabelMineralTableInformation = new JLabel();
 						jPanelWest.add(jLabelMineralTableInformation, BorderLayout.SOUTH);
-						jLabelMineralTableInformation.setText("XXX Information");
+						jLabelMineralTableInformation.setText(DataCenter.langResource.getString("main_information_label"));
 						jLabelMineralTableInformation.setHorizontalAlignment(SwingConstants.RIGHT);
 						jLabelMineralTableInformation.setBackground(new java.awt.Color(255,212,133));
 						jLabelMineralTableInformation.setOpaque(true);
