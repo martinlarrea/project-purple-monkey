@@ -448,12 +448,15 @@ public class JFramePointSetter extends javax.swing.JFrame {
 			DataCenter.samplePath = file.getAbsolutePath();
 			DataCenter.sampleImage = new ImageIcon(DataCenter.samplePath);
 			DataCenter.jframeSetter = this;
+			JDialogGridConfiguration jdg = new JDialogGridConfiguration(this);
+			jdg.setVisible(true);
+			
 			this.jLabelImage.setIcon(DataCenter.sampleImage);
 			
-			//
+			/*
 			this.jLabelImage.sethPoints(90);
 			this.jLabelImage.setvPoints(90);
-			this.jLabelImage.setPointSize(10);
+			this.jLabelImage.setPointSize(10);*/
 		}
 	}
 
