@@ -348,7 +348,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					{
 						jLabelMineralKey = new JLabel();
 						jPanelKeyInput.add(jLabelMineralKey);
-						jLabelMineralKey.setText("XXX Key:");
+						jLabelMineralKey.setText(DataCenter.langResource.getString("key"));
 					}
 					{
 						jTextFieldKey = new IntegerTextField();
@@ -371,7 +371,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				{
 					jLabelInformation = new JLabel();
 					jPanelSouth.add(jLabelInformation, BorderLayout.CENTER);
-					jLabelInformation.setText("XXX Information:");
+					jLabelInformation.setText(DataCenter.langResource.getString("control_information_label"));
 					jLabelInformation.setBackground(new java.awt.Color(234,187,100));
 					jLabelInformation.setOpaque(true);
 				}
