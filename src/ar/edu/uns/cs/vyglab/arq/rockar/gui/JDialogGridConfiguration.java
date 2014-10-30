@@ -10,12 +10,14 @@ import javax.swing.SwingUtilities;
 
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
 import ar.edu.uns.cs.vyglab.java.util.IntegerTextField;
+import ar.edu.uns.cs.vyglab.util.Reporter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -31,16 +33,19 @@ import javax.swing.JTextField;
 */
 public class JDialogGridConfiguration extends javax.swing.JDialog {
 	private JButton jButtonCancel;
+	private JTextPane jTextPane;
 	private JButton jButtonOk;
 	private JLabel jLabelLang;
 	private JTextField jTextFieldNColumns;
+	private JFramePointSetter parent;
 
 	/**
 	* Auto-generated main method to display this JDialog
 	*/
 		
-	public JDialogGridConfiguration(JFrame frame) {
+	public JDialogGridConfiguration(JFramePointSetter frame) {
 		super(frame);
+		this.parent = frame;
 		initGUI();
 	}
 	
@@ -59,7 +64,7 @@ public class JDialogGridConfiguration extends javax.swing.JDialog {
 					jButtonOk = new JButton();
 					getContentPane().add(jButtonOk);
 					jButtonOk.setText(DataCenter.langResource.getString("ok"));
-					jButtonOk.setBounds(277, 228, 93, 31);
+					jButtonOk.setBounds(270, 228, 93, 31);
 					jButtonOk.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jButtonOkActionPerformed(evt);
@@ -73,9 +78,16 @@ public class JDialogGridConfiguration extends javax.swing.JDialog {
 					jButtonCancel.setBounds(12, 228, 93, 31);
 					{
 						jTextFieldNColumns = new IntegerTextField();
-						jTextFieldNColumns.setBounds(256, 10, 114, 19);
+						jTextFieldNColumns.setBounds(248, 12, 114, 19);
 						getContentPane().add(jTextFieldNColumns);
 						jTextFieldNColumns.setColumns(10);
+					}
+					{
+						jTextPane = new JTextPane();
+						getContentPane().add(jTextPane);
+						jTextPane.setText(DataCenter.langResource.getString("grid_config_rows"));
+						jTextPane.setBounds(12, 57, 350, 150);
+						jTextPane.setFocusable(false);
 					}
 					jButtonCancel.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
@@ -91,6 +103,25 @@ public class JDialogGridConfiguration extends javax.swing.JDialog {
 	}
 	
 	private void jButtonOkActionPerformed(ActionEvent evt) {
+		try{
+			int x = Integer.parseInt( this.jTextFieldNColumns.getText() );
+			int width = DataCenter.sampleImage.getIconWidth();
+			int height = DataCenter.sampleImage.getIconWidth();
+			int separacion = width / x;
+			int resto = width % x;
+			
+			if( resto != 0 ) {
+				x = width / separacion;
+				Reporter.Report(x);
+			}			
+			int y = height / separacion;
+			this.parent.getjLabelImage().sethPoints(x);
+			this.parent.getjLabelImage().setvPoints(y);	
+			this.parent.getjLabelImage().setPointSize(10);
+			this.parent.getjLabelImage().getParent().repaint();
+		} catch( Exception e ) {
+			
+		}
 		this.dispose();
 		
 	}

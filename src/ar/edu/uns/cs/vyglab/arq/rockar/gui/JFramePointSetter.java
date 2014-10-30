@@ -538,4 +538,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		return DataCenter.minerals.containsKey(key);		
 	}
 
+	/**
+	 * @return the jLabelImage
+	 */
+	public ImageSample getjLabelImage() {
+		return jLabelImage;
+	}
+
 }
