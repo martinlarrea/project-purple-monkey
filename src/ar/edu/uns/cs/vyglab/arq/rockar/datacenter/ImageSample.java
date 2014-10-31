@@ -23,7 +23,7 @@ public class ImageSample extends JLabel {
 				int yLoc = j * this.pointHeight;
 				if( this.isPointVisible( xLoc, yLoc ) ) {
 					if( DataCenter.showGrids() ) {
-						g.setColor( DataCenter.getGridsColor() );
+						g.setColor( DataCenter.getGridColor() );
 						g.drawRect(xLoc, yLoc, this.pointWidth, this.pointHeight);
 					}
 					if( DataCenter.showPoints()) {

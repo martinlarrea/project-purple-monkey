@@ -25,7 +25,11 @@ public class DataCenter {
 	public static HashMap<Point, Integer> points = null; //each assign point is stored here
 	public static HashMap<Integer, Vector<Point>> minerals = null; //each mineral has it points assign here
 	public static JFrameControlPanel jframeControl = null;
-	public static JFramePointSetter jframeSetter = null;		
+	public static JFramePointSetter jframeSetter = null;
+	public static Color gridColor;
+	public static Color pointsColor;
+	public static Color selectedGridColor;
+	public static Color selectedPointColor;
 	
 	/**
 	 * This method is call every time a new work begin
@@ -79,22 +83,6 @@ public class DataCenter {
 		return true;
 	}
 	
-	public static Color getGridsColor() {
-		return Color.blue;
-	}
-	
-	public static  Color getPointsColor() {
-		return Color.green;
-	}
-	
-	public static Color getSelectedGridColor() {
-		return Color.red;
-	}
-	
-	public static Color getSelectedPointColor() {
-		return Color.red;
-	}
-	
 	public static Color getFillColor( Point p ) {
 		return Color.white;
 	}
@@ -103,6 +91,62 @@ public class DataCenter {
 		DataCenter.jframeSetter.loadLanguage();
 		DataCenter.jframeControl.loadLanguage();
 		
+	}
+
+	/**
+	 * @param gridColor the gridColor to set
+	 */
+	public static void setGridColor(Color gridColor) {
+		DataCenter.gridColor = gridColor;
+	}
+
+	/**
+	 * @param pointsColor the pointsColor to set
+	 */
+	public static void setPointsColor(Color pointsColor) {
+		DataCenter.pointsColor = pointsColor;
+	}
+
+	/**
+	 * @param selectedGridColor the selectedGridColor to set
+	 */
+	public static void setSelectedGridColor(Color selectedGridColor) {
+		DataCenter.selectedGridColor = selectedGridColor;
+	}
+
+	/**
+	 * @param selectedPointColor the selectedPointColor to set
+	 */
+	public static void setSelectedPointColor(Color selectedPointColor) {
+		DataCenter.selectedPointColor = selectedPointColor;
+	}
+
+	/**
+	 * @return the gridColor
+	 */
+	public static Color getGridColor() {
+		return gridColor;
+	}
+
+	/**
+	 * @return the pointsColor
+	 */
+	public static Color getPointsColor() {
+		return pointsColor;
+	}
+
+	/**
+	 * @return the selectedGridColor
+	 */
+	public static Color getSelectedGridColor() {
+		return selectedGridColor;
+	}
+
+	/**
+	 * @return the selectedPointColor
+	 */
+	public static Color getSelectedPointColor() {
+		return selectedPointColor;
 	}
 	
 }

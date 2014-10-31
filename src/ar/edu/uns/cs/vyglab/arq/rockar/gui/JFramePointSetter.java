@@ -261,6 +261,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jButtonColorConfig = new JButton();
 					jToolBar.add(jButtonColorConfig);
 					jButtonColorConfig.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/Actions-format-stroke-color-icon.png")));
+					jButtonColorConfig.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							jButtonColorConfigActionPerformed(evt);
+						}
+					});
 				}
 				{
 					jSeparator4 = new JSeparator();
@@ -543,6 +548,15 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	 */
 	public ImageSample getjLabelImage() {
 		return jLabelImage;
+	}
+	
+	private void jButtonColorConfigActionPerformed(ActionEvent evt) {
+		this.ColorConfiguration();
+	}
+	
+	private void ColorConfiguration() {
+		JDialogColorConfiguration jdcc = new JDialogColorConfiguration(this);
+		jdcc.setVisible(true);
 	}
 
 }
