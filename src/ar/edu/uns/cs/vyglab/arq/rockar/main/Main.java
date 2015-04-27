@@ -18,7 +18,8 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		// Splash Screen
+		// Splash Screen 
+		
 		SplashScreen splash = new SplashScreen(2000);
 		splash.showSplashAndExit();
 		
