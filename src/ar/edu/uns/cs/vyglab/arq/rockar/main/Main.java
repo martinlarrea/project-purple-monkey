@@ -19,7 +19,8 @@ public class Main {
 	public static void main(String[] args) {
 
 		// Splash Screen 
-		// Prueba EGit
+		// Prueba EGitueb
+		// Prueba 2
 		SplashScreen splash = new SplashScreen(2000);
 		splash.showSplashAndExit();
 		
