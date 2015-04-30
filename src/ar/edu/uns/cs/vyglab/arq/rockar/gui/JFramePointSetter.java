@@ -27,7 +27,6 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
-
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -36,6 +35,7 @@ import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.ImageSample;
 import ar.edu.uns.cs.vyglab.java.util.IntegerTextField;
 import ar.edu.uns.cs.vyglab.util.ImageScaler;
+import ar.edu.uns.cs.vyglab.util.Reporter;
 
 
 /**
@@ -217,7 +217,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 					jToggleButtonCells.setPreferredSize(new java.awt.Dimension(44, 44));
 					jToggleButtonCells.setSize(44, 44);
 					jToggleButtonCells.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/cells.png")));
-					jToggleButtonCells.setSelected(true);
+					jToggleButtonCells.setSelected(false);
 					jToggleButtonCells.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							jToggleButtonCellsActionPerformed(evt);
@@ -512,7 +512,21 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	}
 
 	private void sampleClick(int x, int y) {
-		// TODO Auto-generated method stub
+		int columns = this.jLabelImage.gethPoints();
+		int rows = this.jLabelImage.getvPoints();
+		Reporter.Report("Columns " + columns);
+		Reporter.Report("Rows " + rows);
+		int hseparation = this.jLabelImage.getWidth() / this.jLabelImage.gethPoints();
+		int vseparation = this.jLabelImage.getHeight() / this.jLabelImage.getvPoints();
+		Reporter.Report("hSeparation " + hseparation);
+		Reporter.Report("vSeparation " + vseparation);
+		int hstep = x / hseparation;
+		int vstep = y / vseparation;
+		Reporter.Report(hstep);
+		Reporter.Report(vstep);
+		this.jLabelImage.setSelectedhPoint(hstep);
+		this.jLabelImage.setSelectedvPoint(vstep);
+		this.jLabelImage.repaint();
 		
 	}
 	

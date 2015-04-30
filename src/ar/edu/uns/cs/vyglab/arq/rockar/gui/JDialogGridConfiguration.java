@@ -105,19 +105,21 @@ public class JDialogGridConfiguration extends javax.swing.JDialog {
 	private void jButtonOkActionPerformed(ActionEvent evt) {
 		try{
 			int x = Integer.parseInt( this.jTextFieldNColumns.getText() );
-			int width = DataCenter.sampleImage.getIconWidth();
-			int height = DataCenter.sampleImage.getIconWidth();
-			int separacion = width / x;
-			int resto = width % x;
-			
-			if( resto != 0 ) {
-				x = width / separacion;
-				Reporter.Report(x);
-			}			
-			int y = height / separacion;
+			int y = -1;
+			y = x;
+//			int width = DataCenter.sampleImage.getIconWidth();
+//			int height = DataCenter.sampleImage.getIconHeight();
+//			if( width % x != 0 ) {
+//				for(; (width % x != 0)&&(width>x); x++) {
+//				
+//				}
+//			}		
+//			y = (height * x) / width;
+			Reporter.Report("Columns " + x);
+			Reporter.Report("Rows " + y);
 			this.parent.getjLabelImage().sethPoints(x);
 			this.parent.getjLabelImage().setvPoints(y);	
-			this.parent.getjLabelImage().setPointSize(10);
+			this.parent.getjLabelImage().setPointSize(2);
 			this.parent.getjLabelImage().getParent().repaint();
 		} catch( Exception e ) {
 			

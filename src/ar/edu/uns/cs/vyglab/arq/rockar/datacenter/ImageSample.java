@@ -10,6 +10,8 @@ public class ImageSample extends JLabel {
 	protected int pointWidth = -1;
 	protected int pointHeight = -1;
 	protected int pointSize = -1;
+	protected int selectedhPoint = -1;
+	protected int selectedvPoint = -1;
 	
 	public void paint( Graphics g) {
 		super.paint(g);
@@ -31,6 +33,20 @@ public class ImageSample extends JLabel {
 						int xMid = xLoc + (this.pointWidth / 2);
 						int yMid = yLoc + (this.pointHeight / 2);
 						g.drawOval(xMid-(this.pointSize/2), yMid-(this.pointSize/2), this.pointSize, this.pointSize);
+					}
+					if( DataCenter.showSelectedPoint() ) {
+						if ((i==this.selectedhPoint)&&(j==this.selectedvPoint)) {
+							g.setColor( DataCenter.getSelectedPointColor());
+							int xMid = xLoc + (this.pointWidth / 2);
+							int yMid = yLoc + (this.pointHeight / 2);
+							g.drawOval(xMid-(this.pointSize/2), yMid-(this.pointSize/2), this.pointSize, this.pointSize);	
+						}
+					}
+					if( DataCenter.showSelectedGrid() ) {
+						if ((i==this.selectedhPoint)&&(j==this.selectedvPoint)) {
+							g.setColor( DataCenter.getSelectedGridColor() );
+							g.drawRect(xLoc, yLoc, this.pointWidth-1, this.pointHeight-1);
+						}
 					}
 				}
 			}
@@ -111,6 +127,34 @@ public class ImageSample extends JLabel {
 	 */
 	public void setPointSize(int pointSize) {
 		this.pointSize = pointSize;
+	}
+
+	/**
+	 * @return the selectedhPoint
+	 */
+	public int getSelectedhPoint() {
+		return selectedhPoint;
+	}
+
+	/**
+	 * @param selectedhPoint the selectedhPoint to set
+	 */
+	public void setSelectedhPoint(int selectedhPoint) {
+		this.selectedhPoint = selectedhPoint;
+	}
+
+	/**
+	 * @return the selectedvPoint
+	 */
+	public int getSelectedvPoint() {
+		return selectedvPoint;
+	}
+
+	/**
+	 * @param selectedvPoint the selectedvPoint to set
+	 */
+	public void setSelectedvPoint(int selectedvPoint) {
+		this.selectedvPoint = selectedvPoint;
 	}
 	
 }
