@@ -131,11 +131,13 @@ public class JFramePointSetter extends javax.swing.JFrame {
 			});
 			{
 				jToolBar = new JToolBar();
+				jToolBar.setFocusable(false);
 				jToolBar.setLayout( new FlowLayout(FlowLayout.LEFT));
 				getContentPane().add(jToolBar, BorderLayout.NORTH);
 				jToolBar.setFloatable(false);
 				{
 					jButtonNewWork = new JButton();
+					jButtonNewWork.setFocusable(false);
 					jButtonNewWork.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent arg0) {
 							newWork();
@@ -146,11 +148,13 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jButtonOpenWork = new JButton();
+					jButtonOpenWork.setFocusable(false);
 					jToolBar.add(jButtonOpenWork);
 					jButtonOpenWork.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/open.png")));
 				}
 				{
 					jButtonSaveWork = new JButton();
+					jButtonSaveWork.setFocusable(false);
 					jToolBar.add(jButtonSaveWork);
 					jButtonSaveWork.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/save.png")));
 				}
@@ -163,6 +167,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jButtonZoomIn = new JButton();
+					jButtonZoomIn.setFocusable(false);
 					jButtonZoomIn.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent arg0) {
 							zoomIn();
@@ -173,6 +178,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jButtonZoomOut = new JButton();
+					jButtonZoomOut.setFocusable(false);
 					jButtonZoomOut.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							zoomOut();
@@ -184,6 +190,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jButtonZoomReset = new JButton();
+					jButtonZoomReset.setFocusable(false);
 					jButtonZoomReset.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							zoomReset();
@@ -200,6 +207,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jToggleButtonPoints = new JToggleButton();
+					jToggleButtonPoints.setFocusable(false);
 					jToolBar.add(jToggleButtonPoints);
 					jToggleButtonPoints.setSize(44, 44);
 					jToggleButtonPoints.setPreferredSize(new java.awt.Dimension(44, 44));
@@ -213,6 +221,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jToggleButtonCells = new JToggleButton();
+					jToggleButtonCells.setFocusable(false);
 					jToolBar.add(jToggleButtonCells);
 					jToggleButtonCells.setPreferredSize(new java.awt.Dimension(44, 44));
 					jToggleButtonCells.setSize(44, 44);
@@ -226,6 +235,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jToggleButtonSelectedPoint = new JToggleButton();
+					jToggleButtonSelectedPoint.setFocusable(false);
 					jToolBar.add(jToggleButtonSelectedPoint);
 					jToggleButtonSelectedPoint.setPreferredSize(new java.awt.Dimension(44, 44));
 					jToggleButtonSelectedPoint.setSize(44, 44);
@@ -240,6 +250,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jToggleButtonSelectedCell = new JToggleButton();
+					jToggleButtonSelectedCell.setFocusable(false);
 					jToolBar.add(jToggleButtonSelectedCell);
 					jToggleButtonSelectedCell.setPreferredSize(new java.awt.Dimension(44, 44));
 					jToggleButtonSelectedCell.setSize(44, 44);
@@ -259,6 +270,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jButtonColorConfig = new JButton();
+					jButtonColorConfig.setFocusable(false);
 					jToolBar.add(jButtonColorConfig);
 					jButtonColorConfig.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/Actions-format-stroke-color-icon.png")));
 					jButtonColorConfig.addActionListener(new ActionListener() {
@@ -275,6 +287,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jToggleButtonNoShowColor = new JToggleButton();
+					jToggleButtonNoShowColor.setFocusable(false);
 					jToolBar.add(jToggleButtonNoShowColor);
 					jToggleButtonNoShowColor.setPreferredSize(new java.awt.Dimension(44, 44));
 					jToggleButtonNoShowColor.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/nocolor.png")));
@@ -282,12 +295,14 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jToggleButtonTransparentColor = new JToggleButton();
+					jToggleButtonTransparentColor.setFocusable(false);
 					jToolBar.add(jToggleButtonTransparentColor);
 					jToggleButtonTransparentColor.setPreferredSize(new java.awt.Dimension(44, 44));
 					jToggleButtonTransparentColor.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/semitrans.png")));
 				}
 				{
 					jToggleButtonFullColor = new JToggleButton();
+					jToggleButtonFullColor.setFocusable(false);
 					jToolBar.add(jToggleButtonFullColor);
 					jToggleButtonFullColor.setPreferredSize(new java.awt.Dimension(44, 44));
 					jToggleButtonFullColor.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/fullcolor.png")));
@@ -305,6 +320,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jButtonLangChooser = new JButton();
+					jButtonLangChooser.setFocusable(false);
 					jToolBar.add(jButtonLangChooser);
 					jButtonLangChooser.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/1411756268_config-language.png")));
 					jButtonLangChooser.addActionListener(new ActionListener() {
@@ -315,11 +331,13 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jButtonAbout = new JButton();
+					jButtonAbout.setFocusable(false);
 					jToolBar.add(jButtonAbout);
 					jButtonAbout.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/abut.png")));
 				}
 				{
 					jButtonHelp = new JButton();
+					jButtonHelp.setFocusable(false);
 					jToolBar.add(jButtonHelp);
 					jButtonHelp.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/help.png")));
 				}
@@ -331,6 +349,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jButtonExit = new JButton();
+					jButtonExit.setFocusable(false);
 					jToolBar.add(jButtonExit);
 					jButtonExit.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/exit.png")));
 					jButtonExit.addActionListener(new ActionListener() {
@@ -507,7 +526,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		if( DataCenter.sampleImage != null ) {
 			System.out.println("jLabelImage.mouseClicked, event="+evt);
 			this.sampleClick( evt.getX(), evt.getY() );
-			this.jTextFieldKey.requestFocus();
+			this.jTextFieldKey.requestFocusInWindow();
 		}
 	}
 
@@ -530,31 +549,79 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		
 	}
 	
+	
 	private void jTextFieldKeyKeyPressed(KeyEvent evt) {
 		if(this.validate(this.jTextFieldKey.getText()) ) {
 			switch(evt.getKeyCode()) {
 			case(KeyEvent.VK_UP) : {
+				Reporter.Report("Key UP");
+				this.moveSelectedCell(0,-1);
 				break;
 				}
 			case(KeyEvent.VK_DOWN) : {
+				Reporter.Report("Key DOWN");
+				this.moveSelectedCell(0,1);
 				break;
 				}
 			case(KeyEvent.VK_LEFT) : {
+				Reporter.Report("Key LEFT");
+				this.moveSelectedCell(-1,0);
 				break;
 				}
 			case(KeyEvent.VK_RIGHT) : {
+				Reporter.Report("Key RIGHT");
+				this.moveSelectedCell(1,0);
 				break;
 				}
 			case(KeyEvent.VK_ENTER) : {
+				Reporter.Report("Key ENTER");
 				break;
 				}
 			}
 		}
+		else {
+			Reporter.Report("Validation Negative");
+		}
+		Reporter.Report("Focus Requested");
+		this.jTextFieldKey.requestFocusInWindow();
+	}
+
+	private void moveSelectedCell(int i, int j) {
+		if( (this.jLabelImage != null) && (this.jLabelImage.getSelectedhPoint() != -1) ) {
+			int selectedx = this.jLabelImage.getSelectedhPoint();
+			int selectedy = this.jLabelImage.getSelectedvPoint();
+			
+			if(selectedx + i < 0) {
+				selectedx = 0;
+			} else if (selectedx + i >= this.jLabelImage.gethPoints()) {
+				selectedx = this.jLabelImage.gethPoints() - 1;
+			} else {
+				selectedx = selectedx + i;
+			}
+			
+			if(selectedy + j < 0) {
+				selectedy = 0;
+			} else if( selectedy + j >= this.jLabelImage.getvPoints()) {
+				selectedy = this.jLabelImage.getvPoints() - 1;
+			} else {
+				selectedy = selectedy + j;
+			}
+			
+			this.jLabelImage.setSelectedhPoint(selectedx);
+			this.jLabelImage.setSelectedvPoint(selectedy);
+			
+			this.jLabelImage.repaint();
+		}
+		
 	}
 
 	private boolean validate(String text) {
-		int key = Integer.parseInt(text);
-		return DataCenter.minerals.containsKey(key);		
+		if (!text.isEmpty()) {
+			int key = Integer.parseInt(text);
+			return DataCenter.minerals.containsKey(key); }
+		else {
+			return true;
+		}
 	}
 
 	/**
