@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -11,6 +12,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.AbstractSet;
 import java.util.HashMap;
@@ -57,6 +59,7 @@ import org.w3c.dom.NodeList;
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
 import ar.edu.uns.cs.vyglab.java.util.CenterRenderer;
 import ar.edu.uns.cs.vyglab.javax.swing.JReadOnlyTable;
+import ar.edu.uns.cs.vyglab.javax.swing.JImagePanel;
 import ar.edu.uns.cs.vyglab.javax.table.RockTableModel;
 import ar.edu.uns.cs.vyglab.javax.table.cell.ColorRenderer;
 import ar.edu.uns.cs.vyglab.util.Reporter;
@@ -115,6 +118,9 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 	private ChartPanel jPanelPieChart;
 	private DefaultPieDataset pieChartDataset = null;
 	private JFreeChart chart = null;
+	private BufferedImage overview = null;
+	private JPanel jPanelOverviewContent;
+	private JLabel jLabelOverview;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -360,6 +366,13 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 								jToolBarOverview.add(jButtonExportOverview);
 								jButtonExportOverview.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/export-graph.png")));
 							}
+						}
+						{
+							jPanelOverviewContent = new JPanel();
+							jPanelBottom.add(jPanelOverviewContent, BorderLayout.CENTER);
+							jPanelOverviewContent.setLayout(new GridBagLayout());
+							this.jLabelOverview = new JLabel();
+							jPanelOverviewContent.add(this.jLabelOverview);
 						}
 					}
 				}
@@ -608,6 +621,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 	}
 	
 	public void updateVisualizations() {
+		// first, update piechart
 		this.chart.setTitle(DataCenter.samplePath);
 		this.pieChartDataset.clear();
 		PiePlot plot = (PiePlot) chart.getPlot();
@@ -615,6 +629,17 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 			this.pieChartDataset.setValue(entry.getKey(), entry.getValue().size());
 			plot.setSectionPaint(entry.getKey(), DataCenter.colors.get(entry.getKey()));
 		}
+		
+		// then update overview
+		this.overview = new BufferedImage(DataCenter.pointsHorizontal, DataCenter.pointsVertical, BufferedImage.TYPE_INT_RGB);
+		for(Entry<Point, Integer> entry: DataCenter.points.entrySet()) {
+			int x = entry.getKey().x;
+			int y = entry.getKey().y;
+			Color c = DataCenter.colors.get(entry.getValue());
+			this.overview.setRGB(x, y, c.getRGB());
+		}
+		this.jLabelOverview.setIcon(new ImageIcon(this.overview));
+		this.jPanelOverviewContent.repaint();
 	}
 
 }

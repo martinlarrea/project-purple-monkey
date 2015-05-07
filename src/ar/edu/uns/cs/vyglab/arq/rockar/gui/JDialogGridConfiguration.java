@@ -121,6 +121,9 @@ public class JDialogGridConfiguration extends javax.swing.JDialog {
 			this.parent.getjLabelImage().setvPoints(y);	
 			this.parent.getjLabelImage().setPointSize(2);
 			this.parent.getjLabelImage().getParent().repaint();
+			DataCenter.pointsHorizontal = x;
+			DataCenter.pointsVertical = y;
+			DataCenter.pointsSize = 2;
 		} catch( Exception e ) {
 			
 		}
