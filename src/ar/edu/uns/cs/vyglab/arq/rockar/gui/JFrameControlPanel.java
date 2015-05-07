@@ -12,7 +12,11 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.AbstractSet;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -60,6 +64,15 @@ import ar.edu.uns.cs.vyglab.util.Reporter;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
+import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RefineryUtilities;
+
 /**
 * This code was edited or generated using CloudGarden's Jigloo
 * SWT/Swing GUI Builder, which is free for non-commercial
@@ -99,6 +112,9 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 	private JPanel jPanelCenter;
 	private RockTableModel jTableMineralsModel;
 	private int lowestKeyAvaiable = 1;
+	private ChartPanel jPanelPieChart;
+	private DefaultPieDataset pieChartDataset = null;
+	private JFreeChart chart = null;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -112,7 +128,24 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 	}
 	
 	private void initCustomGUI() {
-	
+		// Crear un pie chart vacio
+		pieChartDataset = new DefaultPieDataset();
+		chart = ChartFactory.createPieChart(
+		            "Rock.AR Pie Chart",  // chart title
+		            pieChartDataset,             // data
+		            true,               // include legend
+		            true,
+		            false
+		        );
+		PiePlot plot = (PiePlot) chart.getPlot();
+        plot.setNoDataMessage("No data available");
+        plot.setCircular(false);
+        plot.setLabelGap(0.02);
+        jPanelPieChart = new ChartPanel(this.chart);
+        jPanelTop.add(jPanelPieChart, BorderLayout.CENTER);
+        // TODO
+        // hacer que en la legenda apareza el nombre del mineral, no su clave
+        // hacer que los colores del pie chart se correspondan con la tabla
 	}
 
 
@@ -307,6 +340,9 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 								jButtonExportAll.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/Mimetypes-application-vnd-ms-excel-icon.png")));
 							}
 						}
+						{
+							
+						}
 					}
 					{
 						jPanelBottom = new JPanel();
@@ -360,17 +396,19 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 	}
 	
 	private void jButtonRemoveActionPerformed(ActionEvent evt) {
+		// TODO
 		int row = this.jTableMinerals.getSelectedRow();
 		if( row != -1 ) {
 			int response = JOptionPane.showConfirmDialog(this, DataCenter.langResource.getString("remove_mineral_conf"));
 			if( response == JOptionPane.YES_OPTION ) {
 				int key = (Integer)this.jTableMineralsModel.getValueAt(row, 0);
-				this.jTableMineralsModel.removeRow(response);
+				this.jTableMineralsModel.removeRow(row);
 				if( DataCenter.minerals.containsKey(key) ){
 					DataCenter.minerals.remove(key);
 				}
 				if( DataCenter.points.containsValue(key) ) {
-					//TODO algo...
+					//TODO algo...con los puntos ya contados con esta clave
+					this.updateVisualizations();
 				}
 			}
 		}
@@ -431,6 +469,9 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		int response = saveDialog.showSaveDialog(this);
 		if( response == saveDialog.APPROVE_OPTION ) {
 			File file = saveDialog.getSelectedFile();
+			if(file.getName().lastIndexOf(".") == -1) {
+				file = new File( file.getName() + ".mtf");
+			}
 			try{
 				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -476,9 +517,12 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		}				
 	}
 	
+	
+	
 	private void openTable() {
 		this.checkToSave();
 		DataCenter.minerals = new HashMap<Integer, Vector<Point>>();
+		this.clearJTable();
 		try {
 			File currentDir = new File( System.getProperty("user.dir") );
 			JFileChooser openDialgo = new JFileChooser(currentDir);
@@ -487,6 +531,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 			int response = openDialgo.showOpenDialog(this);
 			if( response == openDialgo.APPROVE_OPTION ) {
 				File fXmlFile = openDialgo.getSelectedFile();
+				Reporter.Report(fXmlFile.getName());
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 				Document doc = dBuilder.parse(fXmlFile);		 
@@ -501,11 +546,14 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 					Color color = new Color(Integer.parseInt(scolor));					
 					this.jTableMineralsModel.addRow(new Object[]{Integer.parseInt(key), name, color, 0, "0.00%"});
 					DataCenter.minerals.put(Integer.parseInt(key), new Vector<Point>());
+					DataCenter.colors.put(Integer.parseInt(key), color);
+					DataCenter.names.put(Integer.parseInt(key), name);
 					if( maxKey < Integer.parseInt(key) ) {
 						maxKey = Integer.parseInt(key);
 					}
 				}
 				this.lowestKeyAvaiable = maxKey + 1;
+				this.updateVisualizations();
 			}
 		} catch( Exception e ) {
 			
@@ -514,6 +562,33 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		
 	}
 	
+	private void clearJTable() {
+		jTableMineralsModel = 
+				new RockTableModel(
+						new String[] {
+								"XKey Value",
+								"XName",
+								"XColor",
+								"XCounted Points",
+								"XRelative Area" }, 0);
+//		jTableMineralsModel.addRow(new Object[] {
+//				0, "x?", Color.gray, 0,
+//				"0.00" });
+		jTableMinerals = new JReadOnlyTable();
+		jScrollPaneMineralTable.setViewportView(jTableMinerals);
+		jTableMinerals.setModel(jTableMineralsModel);
+		jTableMinerals.setDefaultRenderer(Color.class, new ColorRenderer(true));
+		TableCellRenderer centerRenderer = new CenterRenderer();
+		TableColumn column = jTableMinerals.getColumnModel().getColumn(0);
+        column.setCellRenderer( centerRenderer );
+        column = jTableMinerals.getColumnModel().getColumn(1);
+        column.setCellRenderer( centerRenderer );
+        column = jTableMinerals.getColumnModel().getColumn(3);
+        column.setCellRenderer( centerRenderer );
+        column = jTableMinerals.getColumnModel().getColumn(4);
+        column.setCellRenderer( centerRenderer );	
+	}
+
 	private void checkToSave() {
 		if(this.jTableMineralsModel.getRowCount() > 0 ) {
 			int response = JOptionPane.showConfirmDialog(this, DataCenter.langResource.getString("save_mineral_table"));
@@ -530,6 +605,16 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 			this.jTableMineralsModel.removeRow(0);
 		}
 		this.lowestKeyAvaiable = 1;
+	}
+	
+	public void updateVisualizations() {
+		this.chart.setTitle(DataCenter.samplePath);
+		this.pieChartDataset.clear();
+		PiePlot plot = (PiePlot) chart.getPlot();
+		for(Entry<Integer, Vector<Point>> entry : DataCenter.minerals.entrySet()) {
+			this.pieChartDataset.setValue(entry.getKey(), entry.getValue().size());
+			plot.setSectionPaint(entry.getKey(), DataCenter.colors.get(entry.getKey()));
+		}
 	}
 
 }

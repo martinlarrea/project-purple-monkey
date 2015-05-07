@@ -38,6 +38,8 @@ public class Main {
 		DataCenter.jframeSetter = jp;
 		DataCenter.points = new HashMap<Point, Integer>();
 		DataCenter.minerals = new HashMap<Integer, Vector<Point>>();
+		DataCenter.names = new HashMap<Integer, String>();
+		DataCenter.colors = new HashMap<Integer, Color>();
 		DataCenter.setGridColor(Color.white);
 		DataCenter.setPointsColor(Color.white);
 		DataCenter.setSelectedGridColor(Color.red);

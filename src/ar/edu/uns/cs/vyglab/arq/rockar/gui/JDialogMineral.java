@@ -147,9 +147,13 @@ public class JDialogMineral extends javax.swing.JDialog {
 			DataCenter.jframeControl.getjTableMineralsModel().addRow(new Object[] {key, name, color, 0, "0.00%"});		
 			DataCenter.jframeControl.increaseLowestKeyAvaiable();
 			DataCenter.minerals.put(key, new Vector<Point>());
+			DataCenter.colors.put(key, color);
+			DataCenter.names.put(key, name);
 		} else {
 			DataCenter.jframeControl.getjTableMineralsModel().setValueAt(name, this.modify, 1);
 			DataCenter.jframeControl.getjTableMineralsModel().setValueAt(color, this.modify, 2);
+			DataCenter.colors.put(key, color);
+			DataCenter.names.put(key, name);
 		}
 		this.dispose();
 	}

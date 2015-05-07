@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -533,24 +534,28 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	private void sampleClick(int x, int y) {
 		int columns = this.jLabelImage.gethPoints();
 		int rows = this.jLabelImage.getvPoints();
-		Reporter.Report("Columns " + columns);
-		Reporter.Report("Rows " + rows);
 		int hseparation = this.jLabelImage.getWidth() / this.jLabelImage.gethPoints();
 		int vseparation = this.jLabelImage.getHeight() / this.jLabelImage.getvPoints();
-		Reporter.Report("hSeparation " + hseparation);
-		Reporter.Report("vSeparation " + vseparation);
 		int hstep = x / hseparation;
 		int vstep = y / vseparation;
-		Reporter.Report(hstep);
-		Reporter.Report(vstep);
 		this.jLabelImage.setSelectedhPoint(hstep);
 		this.jLabelImage.setSelectedvPoint(vstep);
+		//después de seleccionar el punto hay que ver
+		// si tiene un mineral asociado y cargarlo
+		// Después de moverse, si la nueva celda tiene cargada una key
+					// hay que cargarla en el jtextfield
+		Point p = new Point(hstep, vstep);
+		if( DataCenter.points.containsKey(p) ) {
+			int value = DataCenter.points.get(p);
+			this.jTextFieldKey.setText(String.valueOf(value));
+		}
 		this.jLabelImage.repaint();
 		
 	}
 	
 	
 	private void jTextFieldKeyKeyPressed(KeyEvent evt) {
+		Reporter.Report("TextField Key Press");
 		if(this.validate(this.jTextFieldKey.getText()) ) {
 			switch(evt.getKeyCode()) {
 			case(KeyEvent.VK_UP) : {
@@ -575,6 +580,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 			case(KeyEvent.VK_ENTER) : {
 				Reporter.Report("Key ENTER");
+				this.assignValue(this.jLabelImage.getSelectedhPoint(), this.jLabelImage.getSelectedvPoint(), this.jTextFieldKey.getText());
 				break;
 				}
 			}
@@ -586,11 +592,38 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		this.jTextFieldKey.requestFocusInWindow();
 	}
 
+	private void assignValue(int selectedhPoint, int selectedvPoint, String key) {
+		if(selectedhPoint != -1) {
+			Reporter.Report(selectedhPoint + " " + selectedvPoint + " " + key); 
+			// primero ver si el punto ya tiene un valor asignado
+			Point p = new Point(selectedhPoint, selectedvPoint);
+			if( DataCenter.points.containsKey(p)) { 
+				// el punto ya tenia un valor asignado
+				// se obtiene el value asociado, se elimina el punto y se elimina la asociación inversa 
+				// en el hash de minerales
+				int value = DataCenter.points.get(p);
+				Reporter.Report("Old value" + value);
+				DataCenter.points.remove(p);
+				DataCenter.minerals.get(value).remove(p);
+			}
+			// Se le asigna el nuevo valor al punto
+			Integer value = Integer.parseInt(key);
+			DataCenter.points.put(p, value);
+			DataCenter.minerals.get(value).add(p);
+			Reporter.Report("New value" + value);
+			DataCenter.jframeControl.updateVisualizations();
+		}
+		
+	}
+
 	private void moveSelectedCell(int i, int j) {
 		if( (this.jLabelImage != null) && (this.jLabelImage.getSelectedhPoint() != -1) ) {
 			int selectedx = this.jLabelImage.getSelectedhPoint();
 			int selectedy = this.jLabelImage.getSelectedvPoint();
-			
+			// TODO
+			// Antes de moverse, si la celda actual tiene cargado una key
+			// hay que guardarla
+			this.assignValue(this.jLabelImage.getSelectedhPoint(), this.jLabelImage.getSelectedvPoint(), this.jTextFieldKey.getText());
 			if(selectedx + i < 0) {
 				selectedx = 0;
 			} else if (selectedx + i >= this.jLabelImage.gethPoints()) {
@@ -609,6 +642,13 @@ public class JFramePointSetter extends javax.swing.JFrame {
 			
 			this.jLabelImage.setSelectedhPoint(selectedx);
 			this.jLabelImage.setSelectedvPoint(selectedy);
+			// Después de moverse, si la nueva celda tiene cargada una key
+			// hay que cargarla en el jtextfield
+			Point p = new Point(selectedx, selectedy);
+			if( DataCenter.points.containsKey(p) ) {
+				int value = DataCenter.points.get(p);
+				this.jTextFieldKey.setText(String.valueOf(value));
+			}
 			
 			this.jLabelImage.repaint();
 		}

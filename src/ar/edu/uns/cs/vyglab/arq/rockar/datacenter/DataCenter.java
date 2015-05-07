@@ -24,6 +24,8 @@ public class DataCenter {
 	public static int pointsSize = 0; //size of each point
 	public static HashMap<Point, Integer> points = null; //each assign point is stored here
 	public static HashMap<Integer, Vector<Point>> minerals = null; //each mineral has it points assign here
+	public static HashMap<Integer, Color> colors = null; // each mineral has its own color
+	public static HashMap<Integer, String> names = null; // each mineral has its own name
 	public static JFrameControlPanel jframeControl = null;
 	public static JFramePointSetter jframeSetter = null;
 	public static Color gridColor;
