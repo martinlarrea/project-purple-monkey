@@ -274,8 +274,8 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 					{
 						jLabelMineralTableInformation = new JLabel();
 						jPanelWest.add(jLabelMineralTableInformation, BorderLayout.SOUTH);
-						jLabelMineralTableInformation.setText(DataCenter.langResource.getString("control_information_label"));
-						jLabelMineralTableInformation.setHorizontalAlignment(SwingConstants.RIGHT);
+						jLabelMineralTableInformation.setText(DataCenter.langResource.getString("total_counted_table"));
+						jLabelMineralTableInformation.setHorizontalAlignment(SwingConstants.LEFT);
 						jLabelMineralTableInformation.setBackground(new java.awt.Color(255,212,133));
 						jLabelMineralTableInformation.setOpaque(true);
 					}
@@ -286,11 +286,11 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 							jTableMineralsModel = 
 									new RockTableModel(
 											new String[] {
-													"XKey Value",
-													"XName",
-													"XColor",
-													"XCounted Points",
-													"XRelative Area" }, 0);
+													DataCenter.langResource.getString("keyvalue_table"),
+													DataCenter.langResource.getString("name_table"),
+													DataCenter.langResource.getString("color_table"),
+													DataCenter.langResource.getString("counted_table"),
+													DataCenter.langResource.getString("area_table") }, 0);
 //							jTableMineralsModel.addRow(new Object[] {
 //									0, "x?", Color.gray, 0,
 //									"0.00" });
@@ -579,11 +579,11 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		jTableMineralsModel = 
 				new RockTableModel(
 						new String[] {
-								"XKey Value",
-								"XName",
-								"XColor",
-								"XCounted Points",
-								"XRelative Area" }, 0);
+								DataCenter.langResource.getString("keyvalue_table"),
+								DataCenter.langResource.getString("name_table"),
+								DataCenter.langResource.getString("color_table"),
+								DataCenter.langResource.getString("counted_table"),
+								DataCenter.langResource.getString("area_table") }, 0);
 //		jTableMineralsModel.addRow(new Object[] {
 //				0, "x?", Color.gray, 0,
 //				"0.00" });
@@ -640,6 +640,9 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		}
 		this.jLabelOverview.setIcon(new ImageIcon(this.overview));
 		this.jPanelOverviewContent.repaint();
+		
+		// then update table information}
+		this.jLabelMineralTableInformation.setText(DataCenter.langResource.getString("total_counted_table") + " " + DataCenter.points.size());
 	}
 
 }

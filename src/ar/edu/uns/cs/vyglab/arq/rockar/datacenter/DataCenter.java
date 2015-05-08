@@ -78,11 +78,19 @@ public class DataCenter {
 	}
 	
 	public static boolean showSelectedGrid() {
-		return true;
+		if( DataCenter.jframeSetter != null ) {
+			return DataCenter.jframeSetter.showSelectedGrid();
+		} else {
+			return false;
+		}
 	}
 	
 	public static boolean showSelectedPoint() {
-		return true;
+		if( DataCenter.jframeSetter != null ) {
+			return DataCenter.jframeSetter.showSelectedPoint();
+		} else {
+			return false;
+		}
 	}
 	
 	public static Color getFillColor( Point p ) {

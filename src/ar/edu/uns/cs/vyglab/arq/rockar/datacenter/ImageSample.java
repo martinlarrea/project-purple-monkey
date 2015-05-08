@@ -24,6 +24,7 @@ public class ImageSample extends JLabel {
 				int xLoc = i * this.pointWidth;
 				int yLoc = j * this.pointHeight;
 				if( this.isPointVisible( xLoc, yLoc ) ) {
+					
 					if( DataCenter.showGrids() ) {
 						g.setColor( DataCenter.getGridColor() );
 						g.drawRect(xLoc, yLoc, this.pointWidth, this.pointHeight);

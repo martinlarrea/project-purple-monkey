@@ -593,7 +593,9 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	}
 
 	private void assignValue(int selectedhPoint, int selectedvPoint, String key) {
-		if(selectedhPoint != -1) {
+		// TODO
+		// como manejar el borrado de una clave de un mineral
+		if((selectedhPoint != -1)&&(!key.isEmpty())) {
 			Reporter.Report(selectedhPoint + " " + selectedvPoint + " " + key); 
 			// primero ver si el punto ya tiene un valor asignado
 			Point p = new Point(selectedhPoint, selectedvPoint);
@@ -678,6 +680,14 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	private void ColorConfiguration() {
 		JDialogColorConfiguration jdcc = new JDialogColorConfiguration(this);
 		jdcc.setVisible(true);
+	}
+
+	public boolean showSelectedGrid() {
+		return this.jToggleButtonSelectedCell.isSelected();
+	}
+
+	public boolean showSelectedPoint() {
+		return this.jToggleButtonSelectedPoint.isSelected();
 	}
 
 }
