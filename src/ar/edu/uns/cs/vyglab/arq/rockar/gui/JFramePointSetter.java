@@ -690,4 +690,12 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		return this.jToggleButtonSelectedPoint.isSelected();
 	}
 
+	public boolean showNoColorsPoints() {
+		return this.jToggleButtonNoShowColor.isSelected();
+	}
+
+	public boolean showFullColorsPoints() {
+		return this.jToggleButtonFullColor.isSelected();
+	}
+
 }

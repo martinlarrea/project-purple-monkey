@@ -158,5 +158,21 @@ public class DataCenter {
 	public static Color getSelectedPointColor() {
 		return selectedPointColor;
 	}
+
+	public static boolean showNoColors() {
+		if( DataCenter.jframeSetter != null ) {
+			return DataCenter.jframeSetter.showNoColorsPoints();
+		} else {
+			return false;
+		}
+	}
+
+	public static boolean showFullColors() {
+		if( DataCenter.jframeSetter != null ) {
+			return DataCenter.jframeSetter.showFullColorsPoints();
+		} else {
+			return false;
+		}
+	}
 	
 }

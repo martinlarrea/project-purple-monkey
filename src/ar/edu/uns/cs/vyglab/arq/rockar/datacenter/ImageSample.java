@@ -1,8 +1,12 @@
 package ar.edu.uns.cs.vyglab.arq.rockar.datacenter;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 
 import javax.swing.JLabel;
+
+import ar.edu.uns.cs.vyglab.util.Reporter;
 
 public class ImageSample extends JLabel {
 	protected int hPoints = -1;
@@ -47,6 +51,15 @@ public class ImageSample extends JLabel {
 						if ((i==this.selectedhPoint)&&(j==this.selectedvPoint)) {
 							g.setColor( DataCenter.getSelectedGridColor() );
 							g.drawRect(xLoc, yLoc, this.pointWidth-1, this.pointHeight-1);
+						}
+					}
+					if( DataCenter.showFullColors() ) {
+						Point p = new Point(i,j);
+						if( DataCenter.points.containsKey(p)) {
+							int mineral = DataCenter.points.get(p);
+							Color color = DataCenter.colors.get(mineral);
+							g.setColor(color);
+							g.fillRect(xLoc, yLoc, this.pointWidth, this.pointHeight);
 						}
 					}
 				}
