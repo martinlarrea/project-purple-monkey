@@ -174,5 +174,13 @@ public class DataCenter {
 			return false;
 		}
 	}
+
+	public static boolean showSemiColors() {
+		if( DataCenter.jframeSetter != null ) {
+			return DataCenter.jframeSetter.showSemiColorsPoints();
+		} else {
+			return false;
+		}
+	}
 	
 }

@@ -288,6 +288,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jToggleButtonNoShowColor = new JToggleButton();
+					jToggleButtonNoShowColor.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent arg0) {
+							updateSampleImage();
+						}
+					});
 					jToggleButtonNoShowColor.setFocusable(false);
 					jToolBar.add(jToggleButtonNoShowColor);
 					jToggleButtonNoShowColor.setPreferredSize(new java.awt.Dimension(44, 44));
@@ -296,6 +301,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jToggleButtonTransparentColor = new JToggleButton();
+					jToggleButtonTransparentColor.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							updateSampleImage();
+						}
+					});
 					jToggleButtonTransparentColor.setFocusable(false);
 					jToolBar.add(jToggleButtonTransparentColor);
 					jToggleButtonTransparentColor.setPreferredSize(new java.awt.Dimension(44, 44));
@@ -303,6 +313,11 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jToggleButtonFullColor = new JToggleButton();
+					jToggleButtonFullColor.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							updateSampleImage();
+						}
+					});
 					jToggleButtonFullColor.setFocusable(false);
 					jToolBar.add(jToggleButtonFullColor);
 					jToggleButtonFullColor.setPreferredSize(new java.awt.Dimension(44, 44));
@@ -696,6 +711,10 @@ public class JFramePointSetter extends javax.swing.JFrame {
 
 	public boolean showFullColorsPoints() {
 		return this.jToggleButtonFullColor.isSelected();
+	}
+
+	public boolean showSemiColorsPoints() {
+		return this.jToggleButtonTransparentColor.isSelected();
 	}
 
 }

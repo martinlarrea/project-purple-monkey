@@ -39,6 +39,26 @@ public class ImageSample extends JLabel {
 						int yMid = yLoc + (this.pointHeight / 2);
 						g.drawOval(xMid-(this.pointSize/2), yMid-(this.pointSize/2), this.pointSize, this.pointSize);
 					}
+					if( DataCenter.showFullColors() ) {
+						Point p = new Point(i,j);
+						if( DataCenter.points.containsKey(p)) {
+							int mineral = DataCenter.points.get(p);
+							Color color = DataCenter.colors.get(mineral);
+							g.setColor(color);
+							g.fillRect(xLoc, yLoc, this.pointWidth, this.pointHeight);
+						}						
+					}
+					if( DataCenter.showSemiColors() ) {
+						Point p = new Point(i,j);
+						if( DataCenter.points.containsKey(p)) {
+							int mineral = DataCenter.points.get(p);
+							Color color = DataCenter.colors.get(mineral);
+							color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 100);
+							g.setColor(color);
+							g.fillRect(xLoc, yLoc, this.pointWidth, this.pointHeight);
+						}						
+					}
+					
 					if( DataCenter.showSelectedPoint() ) {
 						if ((i==this.selectedhPoint)&&(j==this.selectedvPoint)) {
 							g.setColor( DataCenter.getSelectedPointColor());
@@ -51,15 +71,6 @@ public class ImageSample extends JLabel {
 						if ((i==this.selectedhPoint)&&(j==this.selectedvPoint)) {
 							g.setColor( DataCenter.getSelectedGridColor() );
 							g.drawRect(xLoc, yLoc, this.pointWidth-1, this.pointHeight-1);
-						}
-					}
-					if( DataCenter.showFullColors() ) {
-						Point p = new Point(i,j);
-						if( DataCenter.points.containsKey(p)) {
-							int mineral = DataCenter.points.get(p);
-							Color color = DataCenter.colors.get(mineral);
-							g.setColor(color);
-							g.fillRect(xLoc, yLoc, this.pointWidth, this.pointHeight);
 						}
 					}
 				}
