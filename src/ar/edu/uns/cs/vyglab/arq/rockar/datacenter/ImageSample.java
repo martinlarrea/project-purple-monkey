@@ -21,8 +21,14 @@ public class ImageSample extends JLabel {
 		super.paint(g);
 		if(this.hPoints==-1) {return;}
 		
-		this.pointWidth = this.getWidth() / this.hPoints;
-		this.pointHeight = this.getHeight() / this.vPoints;
+		if(DataCenter.jframeSetter.currentZoom == 1) {
+			this.pointWidth = DataCenter.sampleImage.getIconWidth() / this.hPoints;
+			this.pointHeight = DataCenter.sampleImage.getIconHeight() / this.vPoints;
+		} else {
+			this.pointWidth = this.getWidth() / this.hPoints;
+			this.pointHeight = this.getHeight() / this.vPoints;
+		}
+
 		for( int i = 0; i < this.hPoints; i++ ) {
 			for( int j = 0; j < this.vPoints; j++ ) {
 				int xLoc = i * this.pointWidth;

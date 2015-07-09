@@ -124,6 +124,9 @@ public class JDialogGridConfiguration extends javax.swing.JDialog {
 			DataCenter.pointsHorizontal = x;
 			DataCenter.pointsVertical = y;
 			DataCenter.pointsSize = 2;
+			
+			DataCenter.jframeControl.setInformationMessage(DataCenter.langResource.getString("grid_information_label") 
+					+ " " + DataCenter.pointsHorizontal + "x" + DataCenter.pointsVertical);
 		} catch( Exception e ) {
 			
 		}

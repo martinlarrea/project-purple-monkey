@@ -156,6 +156,7 @@ public class JDialogMineral extends javax.swing.JDialog {
 			DataCenter.names.put(key, name);
 		}
 		this.dispose();
+		DataCenter.fileMineralList = null; //La tabla en ejecución ya no es igual a la representada en el archivo
 	}
 	
 	private void jButtonCancelActionPerformed(ActionEvent evt) {
@@ -166,6 +167,7 @@ public class JDialogMineral extends javax.swing.JDialog {
 		JColorChooser jcc = new JColorChooser();
 		Color c = jcc.showDialog(this, DataCenter.langResource.getString("color_chooser"), Color.gray);
 		this.jButtonColor.setBackground(c);
+		DataCenter.fileMineralList = null; //La tabla en ejecución ya no es igual a la representada en el archivo
 	}
 
 }

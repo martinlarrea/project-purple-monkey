@@ -14,6 +14,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -21,6 +23,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -31,6 +34,16 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.DataCenter;
 import ar.edu.uns.cs.vyglab.arq.rockar.datacenter.ImageSample;
@@ -85,7 +98,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	private JButton jButtonSaveWork;
 	private JButton jButtonOpenWork;
 	private JButton jButtonNewWork;
-	private int currentZoom = 1;
+	public int currentZoom = 1;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -118,6 +131,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		this.jButtonHelp.setToolTipText(DataCenter.langResource.getString("help_tooltip"));
 		this.jButtonExit.setToolTipText(DataCenter.langResource.getString("exit_tooltip"));
 		this.jLabelMineralKey.setText(DataCenter.langResource.getString("key"));
+
 	}
 
 	private void initGUI() {
@@ -149,12 +163,22 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jButtonOpenWork = new JButton();
+					jButtonOpenWork.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							openSavedWork();
+						}
+					});
 					jButtonOpenWork.setFocusable(false);
 					jToolBar.add(jButtonOpenWork);
 					jButtonOpenWork.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/open.png")));
 				}
 				{
 					jButtonSaveWork = new JButton();
+					jButtonSaveWork.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent arg0) {
+							saveCurrentWork();
+						}
+					});
 					jButtonSaveWork.setFocusable(false);
 					jToolBar.add(jButtonSaveWork);
 					jButtonSaveWork.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/save.png")));
@@ -347,12 +371,14 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 				{
 					jButtonAbout = new JButton();
+					jButtonAbout.setEnabled(false);
 					jButtonAbout.setFocusable(false);
 					jToolBar.add(jButtonAbout);
 					jButtonAbout.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/abut.png")));
 				}
 				{
 					jButtonHelp = new JButton();
+					jButtonHelp.setEnabled(false);
 					jButtonHelp.setFocusable(false);
 					jToolBar.add(jButtonHelp);
 					jButtonHelp.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/help.png")));
@@ -437,6 +463,138 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		}
 	}
 	
+	protected void openSavedWork() {
+		this.checkToSave();
+		DataCenter.end();
+		File currentDir = new File( System.getProperty("user.dir") );
+		JFileChooser openDialgo = new JFileChooser(currentDir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("RCK File", "rck", "rck");
+		openDialgo.setFileFilter(filter);
+		int response = openDialgo.showOpenDialog(this);
+		if( response == openDialgo.APPROVE_OPTION ) {
+			try {
+				DataCenter.begin(openDialgo.getSelectedFile());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		}
+	}
+
+	private void checkToSave() {
+		if( DataCenter.samplePath != null ) {
+			int response = JOptionPane.showConfirmDialog(this, DataCenter.langResource.getString("save_work"));
+			if( response == JOptionPane.YES_OPTION ) {
+				this.saveCurrentWork();
+			}
+		}
+	}
+
+	protected void saveCurrentWork() {
+		// TODO Auto-generated method stub
+		// la tabla de minerales que se uso, si filemineralList es distinto a null, entonces
+		// la tabla en ejecución es la misma que en el archivo, no hace falta guardarla.
+		if(DataCenter.fileMineralList == null) {
+			//la tabla que se ve en ejecución no se corresponde con un archivo
+			//se tiene que guardar la tabla
+			JOptionPane.showMessageDialog(this,
+				DataCenter.langResource.getString("mineral_table_mod")
+					);
+				DataCenter.jframeControl.saveTable();
+		}
+		Reporter.Report("Mineral list: " + DataCenter.fileMineralList);
+				
+				
+		File currentDir = new File( System.getProperty("user.dir") );
+		JFileChooser saveDialog = new JFileChooser(currentDir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("RCK File", "rck", "rck");		
+		saveDialog.setFileFilter(filter);
+		int response = saveDialog.showSaveDialog(this);
+		if( response == saveDialog.APPROVE_OPTION ) {
+			File file = saveDialog.getSelectedFile();
+			if(file.getName().lastIndexOf(".") == -1) {
+				file = new File( file.getName() + ".rck");
+			}
+			try {
+				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+				// root elements
+				Document doc = docBuilder.newDocument();
+				Element rootElement = doc.createElement("work");
+				doc.appendChild(rootElement);
+				
+				Element xmlPoints = doc.createElement("points");
+				rootElement.appendChild(xmlPoints);
+				// en un mismo archivo queda, la lista de puntos contados, cada punto es un (x, y, z), 
+				// donde x,y es la posición e y es el mineral
+				Set<Entry<Point, Integer>> points = DataCenter.points.entrySet();
+				for( Entry<Point, Integer> item : points) {
+					Point key = item.getKey();
+					int value = item.getValue();
+					Reporter.Report( "Key: " + key.toString() );
+					Reporter.Report("Value: " + value);
+					Element point = doc.createElement("point");
+					
+					// set attribute Key.x to point element
+					Attr attrX = doc.createAttribute("x");
+					attrX.setValue(Integer.toString(key.x) );
+					point.setAttributeNode(attrX);
+					
+					// set attribute Key.x to point element
+					Attr attrY = doc.createAttribute("y");
+					attrY.setValue(Integer.toString(key.y) );
+					point.setAttributeNode(attrY);
+					
+					// set attribute value to point element
+					Attr attrM = doc.createAttribute("m");
+					attrM.setValue(Integer.toString(value) );
+					point.setAttributeNode(attrM);
+					
+					xmlPoints.appendChild(point);
+				}
+				
+				// el tamaño de la grilla
+				Element grid = doc.createElement("grid");
+				// set attribute columns to grid element
+				Attr attrCols = doc.createAttribute("cols");
+				attrCols.setValue(Integer.toString(DataCenter.pointsHorizontal) );
+				grid.setAttributeNode(attrCols);
+				// set attribute rows to grid element
+				Attr attrRows = doc.createAttribute("rows");
+				attrRows.setValue(Integer.toString(DataCenter.pointsVertical) );
+				grid.setAttributeNode(attrRows);
+				rootElement.appendChild(grid);
+				
+				// la imagen que se usa
+				Element image = doc.createElement("image");
+				// set attribute columns to grid element
+				Attr attrImage = doc.createAttribute("file");
+				attrImage.setValue(DataCenter.samplePath );
+				image.setAttributeNode(attrImage);
+				rootElement.appendChild(image);
+				
+				// la tabla que se usa
+				Element list = doc.createElement("list");
+				// set attribute columns to grid element
+				Attr attrList = doc.createAttribute("file");
+				attrList.setValue(DataCenter.fileMineralList.toString());
+				list.setAttributeNode(attrList);
+				rootElement.appendChild(list);
+
+				// write the content into xml file
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource source = new DOMSource(doc);
+				StreamResult result = new StreamResult(file);
+				transformer.transform(source, result);			
+			}
+			catch( Exception e ){
+	
+			}
+		}
+	}
+
 	protected void zoomReset() {
 		this.currentZoom = 1;
 		this.jButtonZoomOut.setEnabled(false);
@@ -475,7 +633,8 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		this.jButtonZoomOut.setEnabled(true);
 
 	}
-
+	
+	/*
 	protected void newWork() {
 		this.resetGUI();
 		File currentDir = new File( System.getProperty("user.dir") );
@@ -492,11 +651,44 @@ public class JFramePointSetter extends javax.swing.JFrame {
 			jdg.setVisible(true);
 			
 			this.jLabelImage.setIcon(DataCenter.sampleImage);
+		}
+	} */
+	
+	protected void newWork() {
+		DataCenter.begin();
+		DataCenter.jframeControl.updateVisualizations();
+		this.newWork(false);
+	}
+	
+	protected void newWork(boolean skip) {
+		File currentDir = new File( System.getProperty("user.dir") );
+		JFileChooser openD = new JFileChooser(currentDir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "jpg");
+		openD.setFileFilter(filter);
+		openD.showOpenDialog(this);
+		File file = openD.getSelectedFile();
+		this.newWork(file, skip);
+	}
+	
+	public void newWork(String filePath, boolean skip) {
+		File file = new File(filePath);
+		this.newWork(file, skip);
+		
+	}
+	
+	protected void newWork(File file, boolean skip) {
+		this.resetGUI();
+		if( file != null ) {
+			DataCenter.samplePath = file.getAbsolutePath();
+			DataCenter.sampleImage = new ImageIcon(DataCenter.samplePath);
+			DataCenter.jframeSetter = this;
+			if(!skip) {
+				JDialogGridConfiguration jdg = new JDialogGridConfiguration(this);
+				jdg.setVisible(true);
+			}
+			this.jLabelImage.setIcon(DataCenter.sampleImage);
 			
-			/*
-			this.jLabelImage.sethPoints(90);
-			this.jLabelImage.setvPoints(90);
-			this.jLabelImage.setPointSize(10);*/
+			
 		}
 	}
 
@@ -547,24 +739,37 @@ public class JFramePointSetter extends javax.swing.JFrame {
 	}
 
 	private void sampleClick(int x, int y) {
-		int columns = this.jLabelImage.gethPoints();
-		int rows = this.jLabelImage.getvPoints();
-		int hseparation = this.jLabelImage.getWidth() / this.jLabelImage.gethPoints();
-		int vseparation = this.jLabelImage.getHeight() / this.jLabelImage.getvPoints();
-		int hstep = x / hseparation;
-		int vstep = y / vseparation;
-		this.jLabelImage.setSelectedhPoint(hstep);
-		this.jLabelImage.setSelectedvPoint(vstep);
-		//después de seleccionar el punto hay que ver
-		// si tiene un mineral asociado y cargarlo
-		// Después de moverse, si la nueva celda tiene cargada una key
-					// hay que cargarla en el jtextfield
-		Point p = new Point(hstep, vstep);
-		if( DataCenter.points.containsKey(p) ) {
-			int value = DataCenter.points.get(p);
-			this.jTextFieldKey.setText(String.valueOf(value));
+		//validar que el click sea sobre la muestra
+		//en caso de que la muestra sea más chica que el visor
+		
+		if(( x <= DataCenter.sampleImage.getIconWidth()*this.currentZoom ) && 
+				(y <= DataCenter.sampleImage.getIconHeight()*this.currentZoom)) {
+			int columns = this.jLabelImage.gethPoints();
+			int rows = this.jLabelImage.getvPoints();
+			int hseparation;
+			int vseparation;
+			if(this.currentZoom == 1) {
+				hseparation = DataCenter.sampleImage.getIconWidth() / this.jLabelImage.gethPoints();
+				vseparation = DataCenter.sampleImage.getIconHeight() / this.jLabelImage.getvPoints();
+			} else {
+				hseparation = this.jLabelImage.getWidth() / this.jLabelImage.gethPoints();
+				vseparation = this.jLabelImage.getHeight() / this.jLabelImage.getvPoints();
+			}
+			int hstep = x / hseparation;
+			int vstep = y / vseparation;
+			this.jLabelImage.setSelectedhPoint(hstep);
+			this.jLabelImage.setSelectedvPoint(vstep);
+			//después de seleccionar el punto hay que ver
+			// si tiene un mineral asociado y cargarlo
+			// Después de moverse, si la nueva celda tiene cargada una key
+						// hay que cargarla en el jtextfield
+			Point p = new Point(hstep, vstep);
+			if( DataCenter.points.containsKey(p) ) {
+				int value = DataCenter.points.get(p);
+				this.jTextFieldKey.setText(String.valueOf(value));
+			}
+			this.jLabelImage.repaint();
 		}
-		this.jLabelImage.repaint();
 		
 	}
 	
@@ -595,7 +800,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				}
 			case(KeyEvent.VK_ENTER) : {
 				Reporter.Report("Key ENTER");
-				this.assignValue(this.jLabelImage.getSelectedhPoint(), this.jLabelImage.getSelectedvPoint(), this.jTextFieldKey.getText());
+				this.assignValue(this.jLabelImage.getSelectedhPoint(), this.jLabelImage.getSelectedvPoint(), this.jTextFieldKey.getText(), true);
 				break;
 				}
 			}
@@ -607,11 +812,8 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		this.jTextFieldKey.requestFocusInWindow();
 	}
 
-	private void assignValue(int selectedhPoint, int selectedvPoint, String key) {
-		// TODO
-		// como manejar el borrado de una clave de un mineral
-		if((selectedhPoint != -1)&&(!key.isEmpty())) {
-			Reporter.Report(selectedhPoint + " " + selectedvPoint + " " + key); 
+	public void assignValue(int selectedhPoint, int selectedvPoint, String key, boolean update) {
+		if((selectedhPoint != -1)) {
 			// primero ver si el punto ya tiene un valor asignado
 			Point p = new Point(selectedhPoint, selectedvPoint);
 			if( DataCenter.points.containsKey(p)) { 
@@ -623,14 +825,17 @@ public class JFramePointSetter extends javax.swing.JFrame {
 				DataCenter.points.remove(p);
 				DataCenter.minerals.get(value).remove(p);
 			}
+			// si el key no es empty
 			// Se le asigna el nuevo valor al punto
-			Integer value = Integer.parseInt(key);
-			DataCenter.points.put(p, value);
-			DataCenter.minerals.get(value).add(p);
-			Reporter.Report("New value" + value);
-			DataCenter.jframeControl.updateVisualizations();
+			if(!key.isEmpty()) {
+				Integer value = Integer.parseInt(key);
+				DataCenter.points.put(p, value);
+				DataCenter.minerals.get(value).add(p);
+			}
+			if( update ) {
+				DataCenter.jframeControl.updateVisualizations();
+			}
 		}
-		
 	}
 
 	private void moveSelectedCell(int i, int j) {
@@ -640,7 +845,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 			// TODO
 			// Antes de moverse, si la celda actual tiene cargado una key
 			// hay que guardarla
-			this.assignValue(this.jLabelImage.getSelectedhPoint(), this.jLabelImage.getSelectedvPoint(), this.jTextFieldKey.getText());
+			this.assignValue(this.jLabelImage.getSelectedhPoint(), this.jLabelImage.getSelectedvPoint(), this.jTextFieldKey.getText(), true);
 			if(selectedx + i < 0) {
 				selectedx = 0;
 			} else if (selectedx + i >= this.jLabelImage.gethPoints()) {
@@ -717,4 +922,7 @@ public class JFramePointSetter extends javax.swing.JFrame {
 		return this.jToggleButtonTransparentColor.isSelected();
 	}
 
+	public void setInformationMessage(String string) {
+		this.jLabelInformation.setText( DataCenter.langResource.getString("main_information_label") + " " + string);
+	}
 }

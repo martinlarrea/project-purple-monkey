@@ -18,9 +18,10 @@ public class Main {
 
 	public static void main(String[] args) {
 
+		Reporter.Report("Use 'debug' to enable trace information");
+		Reporter.flag = ((args.length > 0)&&(args[0].equalsIgnoreCase("debug")));
+		
 		// Splash Screen 
-		// Prueba EGitueb
-		// Prueba 2
 		SplashScreen splash = new SplashScreen(2000);
 		splash.showSplashAndExit();
 		
@@ -36,14 +37,7 @@ public class Main {
 		
 		DataCenter.jframeControl = cp;
 		DataCenter.jframeSetter = jp;
-		DataCenter.points = new HashMap<Point, Integer>();
-		DataCenter.minerals = new HashMap<Integer, Vector<Point>>();
-		DataCenter.names = new HashMap<Integer, String>();
-		DataCenter.colors = new HashMap<Integer, Color>();
-		DataCenter.setGridColor(Color.white);
-		DataCenter.setPointsColor(Color.white);
-		DataCenter.setSelectedGridColor(Color.red);
-		DataCenter.setSelectedPointColor(Color.red);
+		DataCenter.begin();
 		
 	}
 

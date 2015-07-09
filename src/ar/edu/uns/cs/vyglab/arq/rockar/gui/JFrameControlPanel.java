@@ -3,8 +3,10 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +16,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.AbstractSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -121,6 +125,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 	private BufferedImage overview = null;
 	private JPanel jPanelOverviewContent;
 	private JLabel jLabelOverview;
+	private Image scaled;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -139,7 +144,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		chart = ChartFactory.createPieChart(
 		            "Rock.AR Pie Chart",  // chart title
 		            pieChartDataset,             // data
-		            true,               // include legend
+		            false,               // include legend
 		            true,
 		            false
 		        );
@@ -150,7 +155,6 @@ public class JFrameControlPanel extends javax.swing.JFrame {
         jPanelPieChart = new ChartPanel(this.chart);
         jPanelTop.add(jPanelPieChart, BorderLayout.CENTER);
         // TODO
-        // hacer que en la legenda apareza el nombre del mineral, no su clave
         // hacer que los colores del pie chart se correspondan con la tabla
 	}
 
@@ -332,17 +336,28 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 							jToolBarStats.setFocusable(false);
 							{
 								jButtonExportStats = new JButton();
-								jToolBarStats.add(jButtonExportStats);
+								jButtonExportStats.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent arg0) {
+										saveChartAsImage();
+									}
+								});
+								//jToolBarStats.add(jButtonExportStats);
 								jButtonExportStats.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/export-graph.png")));
 							}
 							{
 								jButtonExportExcel = new JButton();
-								jToolBarStats.add(jButtonExportExcel);
+								//jToolBarStats.add(jButtonExportExcel);
+								//jToolBarMineralTable.add(jButtonExportExcel);
 								jButtonExportExcel.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/excel-icon.png")));
+								jButtonExportExcel.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent arg0) {
+										exportToExcel();
+									}
+								});
 							}
 							{
 								jButtonExportAll = new JButton();
-								jToolBarStats.add(jButtonExportAll);
+								//jToolBarStats.add(jButtonExportAll);
 								jButtonExportAll.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/Mimetypes-application-vnd-ms-excel-icon.png")));
 							}
 						}
@@ -365,6 +380,11 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 								jButtonExportOverview = new JButton();
 								jToolBarOverview.add(jButtonExportOverview);
 								jButtonExportOverview.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ar/edu/uns/cs/vyglab/arq/rockar/resources/images/export-graph.png")));
+								jButtonExportOverview.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent arg0) {
+										exportOverview();
+									}
+								});
 							}
 						}
 						{
@@ -385,12 +405,59 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		}
 	}
 	
+	protected void exportOverview() {
+		File currentDir = new File( System.getProperty("user.dir") );
+		JFileChooser saveDialog = new JFileChooser(currentDir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG File", "png", "ong");		
+		saveDialog.setFileFilter(filter);
+		int response = saveDialog.showSaveDialog(this);
+		if( response == saveDialog.APPROVE_OPTION ) {
+			File outputfile = saveDialog.getSelectedFile();
+			if(outputfile.getName().lastIndexOf(".") == -1) {
+				outputfile = new File( outputfile.getName() + ".png");
+			}
+		try {
+			//ImageIO.write(this.overview, "jpg", outputfile);
+			BufferedImage bi = new BufferedImage(
+					this.jLabelOverview.getIcon().getIconWidth(),
+					this.jLabelOverview.getIcon().getIconHeight(),
+				    BufferedImage.TYPE_INT_RGB);
+				Graphics g = bi.createGraphics();
+				// paint the Icon to the BufferedImage.
+				this.jLabelOverview.getIcon().paintIcon(null, g, 0,0);
+				g.dispose();
+			ImageIO.write( bi, "png", outputfile); 
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			}
+		}
+	}
+
+	protected void exportToExcel() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void saveChartAsImage() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void thisWindowClosed(WindowEvent evt) {
 		DataCenter.exitApp();
 	}
 	
 	private void thisComponentResized(ComponentEvent evt) {
-
+		if(this.overview != null) {
+			Image scaled = this.overview.getScaledInstance(this.jPanelOverviewContent.getWidth(),
+					this.jPanelOverviewContent.getHeight(),
+					Image.SCALE_SMOOTH);
+			//this.jLabelOverview.setIcon(new ImageIcon(this.overview));
+			this.jLabelOverview.setIcon(new ImageIcon(scaled));
+			this.jPanelOverviewContent.repaint();
+		}
 	}
 
 	public void loadLanguage() {
@@ -406,6 +473,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		this.jButtonNew.setToolTipText(DataCenter.langResource.getString("newtable_tooltip"));
 		this.jButtonOpen.setToolTipText(DataCenter.langResource.getString("opentable_tooltip"));
 		this.jButtonSave.setToolTipText(DataCenter.langResource.getString("savetable_tooltip"));
+		this.jButtonExportExcel.setToolTipText(DataCenter.langResource.getString("export_table"));
 	}
 	
 	private void jButtonRemoveActionPerformed(ActionEvent evt) {
@@ -423,6 +491,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 					//TODO algo...con los puntos ya contados con esta clave
 					this.updateVisualizations();
 				}
+				DataCenter.fileMineralList = null; //La tabla en ejecución ya no es igual a la que se cargó
 			}
 		}
 	}
@@ -474,7 +543,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		this.saveTable();
 	}
 
-	private void saveTable() {
+	public void saveTable() {
 		File currentDir = new File( System.getProperty("user.dir") );
 		JFileChooser saveDialog = new JFileChooser(currentDir);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("MTF File", "mtf", "mtf");		
@@ -485,6 +554,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 			if(file.getName().lastIndexOf(".") == -1) {
 				file = new File( file.getName() + ".mtf");
 			}
+			DataCenter.fileMineralList = file;
 			try{
 				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -522,7 +592,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 				TransformerFactory transformerFactory = TransformerFactory.newInstance();
 				Transformer transformer = transformerFactory.newTransformer();
 				DOMSource source = new DOMSource(doc);
-				StreamResult result = new StreamResult(file);
+				StreamResult result = new StreamResult(DataCenter.fileMineralList);
 		 	 
 				transformer.transform(source, result);
 				
@@ -530,7 +600,46 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		}				
 	}
 	
+	public void openTable(String file) {
+		try {
+			DataCenter.fileMineralList = new File(file);
+			Reporter.Report(DataCenter.fileMineralList.getName());
+			this.openTable(DataCenter.fileMineralList);
+		} catch( Exception e ) {
+			
+		}
+	}
 	
+	private void openTable(File file) {
+		try {
+			DataCenter.fileMineralList = file;
+			Reporter.Report(DataCenter.fileMineralList.getName());
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(DataCenter.fileMineralList);		 
+			doc.getDocumentElement().normalize();
+			NodeList nListMinerals = doc.getElementsByTagName("mineral");
+			int maxKey = 0;
+			for( int i = 0; i < nListMinerals.getLength(); i++ ) {
+				Element mineral = (Element)nListMinerals.item(i);
+				String key = mineral.getAttribute("key");
+				String name = mineral.getAttribute("name");
+				String scolor = mineral.getAttribute("color");
+				Color color = new Color(Integer.parseInt(scolor));					
+				this.jTableMineralsModel.addRow(new Object[]{Integer.parseInt(key), name, color, 0, "0.00%"});
+				DataCenter.minerals.put(Integer.parseInt(key), new Vector<Point>());
+				DataCenter.colors.put(Integer.parseInt(key), color);
+				DataCenter.names.put(Integer.parseInt(key), name);
+				if( maxKey < Integer.parseInt(key) ) {
+					maxKey = Integer.parseInt(key);
+				}
+			}
+			this.lowestKeyAvaiable = maxKey + 1;
+			this.updateVisualizations();
+		} catch( Exception e ) {
+			
+		}
+	}
 	
 	private void openTable() {
 		this.checkToSave();
@@ -543,11 +652,31 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 			openDialgo.setFileFilter(filter);
 			int response = openDialgo.showOpenDialog(this);
 			if( response == openDialgo.APPROVE_OPTION ) {
-				File fXmlFile = openDialgo.getSelectedFile();
-				Reporter.Report(fXmlFile.getName());
+				this.openTable(openDialgo.getSelectedFile());
+			}
+		}
+		catch( Exception e) {
+			
+		}
+	}
+	
+	/*
+	private void openTable() {
+		this.checkToSave();
+		DataCenter.minerals = new HashMap<Integer, Vector<Point>>();
+		this.clearJTable();
+		try {
+			File currentDir = new File( System.getProperty("user.dir") );
+			JFileChooser openDialgo = new JFileChooser(currentDir);
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("MTF File", "mtf", "mtf");
+			openDialgo.setFileFilter(filter);
+			int response = openDialgo.showOpenDialog(this);
+			if( response == openDialgo.APPROVE_OPTION ) {
+				DataCenter.fileMineralList = openDialgo.getSelectedFile();
+				Reporter.Report(DataCenter.fileMineralList.getName());
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-				Document doc = dBuilder.parse(fXmlFile);		 
+				Document doc = dBuilder.parse(DataCenter.fileMineralList);		 
 				doc.getDocumentElement().normalize();
 				NodeList nListMinerals = doc.getElementsByTagName("mineral");
 				int maxKey = 0;
@@ -571,11 +700,9 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		} catch( Exception e ) {
 			
 		}
-		
-		
-	}
+	} */
 	
-	private void clearJTable() {
+	public void clearJTable() {
 		jTableMineralsModel = 
 				new RockTableModel(
 						new String[] {
@@ -613,6 +740,7 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 
 	private void newTable() {
 		this.checkToSave();
+		DataCenter.fileMineralList = null;
 		int tope = this.jTableMineralsModel.getRowCount();
 		for( int i = 0; i < tope; i++ ) {
 			this.jTableMineralsModel.removeRow(0);
@@ -626,23 +754,59 @@ public class JFrameControlPanel extends javax.swing.JFrame {
 		this.pieChartDataset.clear();
 		PiePlot plot = (PiePlot) chart.getPlot();
 		for(Entry<Integer, Vector<Point>> entry : DataCenter.minerals.entrySet()) {
-			this.pieChartDataset.setValue(entry.getKey(), entry.getValue().size());
-			plot.setSectionPaint(entry.getKey(), DataCenter.colors.get(entry.getKey()));
+			if(entry.getValue().size() != 0) {
+				this.pieChartDataset.setValue(DataCenter.names.get(entry.getKey()), entry.getValue().size());
+				plot.setSectionPaint(DataCenter.names.get(entry.getKey()), DataCenter.colors.get(entry.getKey()));
+			}
 		}
 		
-		// then update overview
-		this.overview = new BufferedImage(DataCenter.pointsHorizontal, DataCenter.pointsVertical, BufferedImage.TYPE_INT_RGB);
-		for(Entry<Point, Integer> entry: DataCenter.points.entrySet()) {
-			int x = entry.getKey().x;
-			int y = entry.getKey().y;
-			Color c = DataCenter.colors.get(entry.getValue());
-			this.overview.setRGB(x, y, c.getRGB());
+		// then update overview, if exists
+		//TODO fit jlabeloverview into jpanel
+		if( DataCenter.pointsHorizontal != 0 ) {
+			this.overview = new BufferedImage(DataCenter.pointsHorizontal, DataCenter.pointsVertical, BufferedImage.TYPE_INT_RGB);
+			for(Entry<Point, Integer> entry: DataCenter.points.entrySet()) {
+				int x = entry.getKey().x;
+				int y = entry.getKey().y;
+				Color c = DataCenter.colors.get(entry.getValue());
+				this.overview.setRGB(x, y, c.getRGB());
+			}
+			scaled = this.overview.getScaledInstance(this.jPanelOverviewContent.getWidth(),
+					this.jPanelOverviewContent.getHeight(),
+					Image.SCALE_SMOOTH);
+			//this.jLabelOverview.setIcon(new ImageIcon(this.overview));
+			this.jLabelOverview.setIcon(new ImageIcon(scaled));
+			this.jPanelOverviewContent.repaint();
 		}
-		this.jLabelOverview.setIcon(new ImageIcon(this.overview));
-		this.jPanelOverviewContent.repaint();
 		
 		// then update table information}
 		this.jLabelMineralTableInformation.setText(DataCenter.langResource.getString("total_counted_table") + " " + DataCenter.points.size());
+		int totalPoints = DataCenter.points.size();
+		Set<Entry<Integer, Vector<Point>>> minerals = DataCenter.minerals.entrySet();
+		for(Entry<Integer, Vector<Point>> item : minerals ) {
+			int mineral = item.getKey();
+			for( int i = 0; i < this.jTableMineralsModel.getRowCount(); i++) {
+				if( mineral == (Integer)this.jTableMineralsModel.getValueAt(i, 0)) {
+					this.jTableMineralsModel.setValueAt(item.getValue().size(), i, 3);
+					float countLocal = item.getValue().size();
+					float total = totalPoints;
+					float percent = (countLocal * (float)100)/total;
+					String s = String.format("%.2f", percent);
+					this.jTableMineralsModel.setValueAt(s + "%", i, 4);
+					break;
+				}
+			}
+		}
+		
+		// update main view
+		DataCenter.jframeSetter.getjLabelImage().repaint();
+		/*
+		 * Set<Entry<Point, Integer>> points = DataCenter.points.entrySet();
+				for( Entry<Point, Integer> item : points) {
+		 */
+	}
+	
+	public void setInformationMessage(String string) {
+		this.jLabelInformation.setText( DataCenter.langResource.getString("control_information_label") + " " + string);
 	}
 
 }
