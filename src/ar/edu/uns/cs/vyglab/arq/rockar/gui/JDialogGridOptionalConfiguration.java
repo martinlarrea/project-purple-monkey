@@ -37,6 +37,7 @@ public class JDialogGridOptionalConfiguration extends javax.swing.JDialog {
 	private JButton jButtonOKAuto;
 	private JButton jButtonApplyAuto;
 	private JTextPane jTextPaneAuto;
+	private JTextPane jTextPaneObservation;
 	
 	
 	public JDialogGridOptionalConfiguration( JFramePointSetter parent) {
@@ -50,7 +51,7 @@ public class JDialogGridOptionalConfiguration extends javax.swing.JDialog {
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		this.jPanelAutomatic = new JPanel();
 		this.jPanelManual = new JPanel();
-		this.tabbedPane.add("XAutomatic", this.jPanelAutomatic);
+		this.tabbedPane.add(DataCenter.langResource.getString("grid_config_automatic"), this.jPanelAutomatic);
 		jPanelAutomatic.setLayout(null);
 		
 		this.jLabelColumns = new JLabel(DataCenter.langResource.getString("grid_config_columns"));
@@ -61,7 +62,7 @@ public class JDialogGridOptionalConfiguration extends javax.swing.JDialog {
 		this.jLabelColumnsAuto.setBounds(12, 12, 172, 32);
 		this.jPanelAutomatic.add(this.jLabelColumnsAuto);
 		
-		this.tabbedPane.add("XManual", this.jPanelManual);
+		this.tabbedPane.add(DataCenter.langResource.getString("grid_config_manual"), this.jPanelManual);
 		jPanelManual.setLayout(null);
 		
 		this.jLabelRows = new JLabel(DataCenter.langResource.getString("grid_config_lrows"));
@@ -140,17 +141,53 @@ public class JDialogGridOptionalConfiguration extends javax.swing.JDialog {
 		jButtonApplyAuto.setBounds(166, 206, 117, 25);
 		jPanelAutomatic.add(jButtonApplyAuto);
 		
+		jTextPaneObservation = new JTextPane();
+		jTextPaneObservation.setBounds(12, 79, 419, 115);
+		jTextPaneObservation.setText(DataCenter.langResource.getString("grid_config_rows"));
+		jPanelAutomatic.add(jTextPaneObservation);
+		
 		this.setSize(459, 295);
 
 	}
 
 	protected void applyAuto() {
-		// TODO Auto-generated method stub
+		try{
+			int x = Integer.parseInt(this.textFieldColumnsAuto.getText());
+			int y = -1;
+			y = x;
+			int width = DataCenter.sampleImage.getIconWidth();
+			int height = DataCenter.sampleImage.getIconHeight();
+			if( width % x != 0 ) {
+				for(; (width % x != 0)&&(width>x); x++) {
+				
+				}
+			}		
+			y = (height * x) / width;
+			Reporter.Report("Columns " + x);
+			Reporter.Report("Rows " + y);
+			((JFramePointSetter) this.getParent()).getjLabelImage().sethPoints(x);
+			((JFramePointSetter) this.getParent()).getjLabelImage().setvPoints(y);	
+			((JFramePointSetter) this.getParent()).getjLabelImage().setPointSize(2);
+			((JFramePointSetter) this.getParent()).getjLabelImage().getParent().repaint();
+			DataCenter.pointsHorizontal = x;
+			DataCenter.pointsVertical = y;
+			DataCenter.pointsSize = 2;
+			
+			DataCenter.jframeControl.setInformationMessage(DataCenter.langResource.getString("grid_information_label") 
+					+ " " + DataCenter.pointsHorizontal + "x" + DataCenter.pointsVertical);
+			
+			this.getParent().repaint();
+		}
+		catch( Exception e ) {
+			
+		}
 		
 	}
 
 	protected void okAuto() {
-		// TODO Auto-generated method stub
+		this.applyAuto();
+		this.setVisible(false);
+		this.dispose();
 		
 	}
 
@@ -158,6 +195,8 @@ public class JDialogGridOptionalConfiguration extends javax.swing.JDialog {
 		// TODO Auto-generated method stub
 		// general la grilla, cierra el dialogo
 		this.applyManual();
+		this.setVisible(false);
+		this.dispose();
 
 	}
 
