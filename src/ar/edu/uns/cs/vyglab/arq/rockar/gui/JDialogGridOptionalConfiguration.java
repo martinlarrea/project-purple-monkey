@@ -13,6 +13,7 @@ import java.awt.Panel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 
 import java.awt.event.ActionListener;
@@ -28,7 +29,15 @@ public class JDialogGridOptionalConfiguration extends javax.swing.JDialog {
 	private IntegerTextField textFieldRows;
 	private JButton jButtonCancelManual;
 	private JButton jButtonOKManual;
-	private JButton jButtonApply;
+	private JButton jButtonApplyManual;
+	
+	protected JLabel jLabelColumnsAuto;
+	private IntegerTextField textFieldColumnsAuto;
+	private JButton jButtonCancelAuto;
+	private JButton jButtonOKAuto;
+	private JButton jButtonApplyAuto;
+	private JTextPane jTextPaneAuto;
+	
 	
 	public JDialogGridOptionalConfiguration( JFramePointSetter parent) {
 		super(parent);
@@ -46,8 +55,12 @@ public class JDialogGridOptionalConfiguration extends javax.swing.JDialog {
 		
 		this.jLabelColumns = new JLabel(DataCenter.langResource.getString("grid_config_columns"));
 		this.jLabelColumns.setBounds(12, 12, 172, 32);
-		//jPanelAutomatic.add(this.jLabelColumns);
 		jPanelManual.add(this.jLabelColumns);
+		
+		this.jLabelColumnsAuto = new JLabel(DataCenter.langResource.getString("grid_config_columns"));
+		this.jLabelColumnsAuto.setBounds(12, 12, 172, 32);
+		this.jPanelAutomatic.add(this.jLabelColumnsAuto);
+		
 		this.tabbedPane.add("XManual", this.jPanelManual);
 		jPanelManual.setLayout(null);
 		
@@ -60,6 +73,12 @@ public class JDialogGridOptionalConfiguration extends javax.swing.JDialog {
 		textFieldColumns.setBounds(259, 12, 172, 32);
 		jPanelManual.add(textFieldColumns);
 		textFieldColumns.setColumns(10);
+		
+		textFieldColumnsAuto = new IntegerTextField();
+		textFieldColumnsAuto.setHorizontalAlignment(SwingConstants.CENTER);
+		textFieldColumnsAuto.setBounds(259, 12, 172, 32);
+		jPanelAutomatic.add(textFieldColumnsAuto);
+		textFieldColumnsAuto.setColumns(10);
 		
 		textFieldRows = new IntegerTextField();
 		textFieldRows.setBounds(259, 66, 172, 32);
@@ -85,25 +104,61 @@ public class JDialogGridOptionalConfiguration extends javax.swing.JDialog {
 		jButtonOKManual.setBounds(314, 206, 117, 25);
 		jPanelManual.add(jButtonOKManual);
 		
-		jButtonApply = new JButton(DataCenter.langResource.getString("apply"));
-		jButtonApply.addActionListener(new ActionListener() {
+		jButtonApplyManual = new JButton(DataCenter.langResource.getString("apply"));
+		jButtonApplyManual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				applyManual();
 			}
 		});
-		jButtonApply.setBounds(166, 206, 117, 25);
-		jPanelManual.add(jButtonApply);
+		jButtonApplyManual.setBounds(166, 206, 117, 25);
+		jPanelManual.add(jButtonApplyManual);
+		
+		jButtonCancelAuto = new JButton(DataCenter.langResource.getString("cancel"));
+		jButtonCancelAuto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				cancelManual();
+			}
+		});
+		jButtonCancelAuto.setBounds(12, 206, 117, 25);
+		jPanelAutomatic.add(jButtonCancelAuto);
+		
+		jButtonOKAuto= new JButton(DataCenter.langResource.getString("ok"));
+		jButtonOKAuto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				okAuto();
+			}
+		});
+		jButtonOKAuto.setBounds(314, 206, 117, 25);
+		jPanelAutomatic.add(jButtonOKAuto);
+		
+		jButtonApplyAuto= new JButton(DataCenter.langResource.getString("apply"));
+		jButtonApplyAuto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				applyAuto();
+			}
+		});
+		jButtonApplyAuto.setBounds(166, 206, 117, 25);
+		jPanelAutomatic.add(jButtonApplyAuto);
 		
 		this.setSize(459, 295);
 
+	}
+
+	protected void applyAuto() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void okAuto() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	protected void okManual() {
 		// TODO Auto-generated method stub
 		// general la grilla, cierra el dialogo
 		this.applyManual();
-		this.setVisible(false);
-		this.dispose();
+
 	}
 
 	protected void applyManual() {
@@ -130,6 +185,7 @@ public class JDialogGridOptionalConfiguration extends javax.swing.JDialog {
 
 	protected void cancelManual() {
 		// TODO Auto-generated method stub
-		//?
+		this.setVisible(false);
+		this.dispose();
 	}
 }
