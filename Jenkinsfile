@@ -7,6 +7,7 @@ pipeline {
 
      	 steps {
        		 sh 'alias pmd="$HOME/Downloads/PMD/pmd-bin-6.17.0/bin/run.sh pmd"'
+       		 sh 'pmd -d'
      		 }
    		 }
     
