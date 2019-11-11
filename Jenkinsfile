@@ -1,7 +1,8 @@
 pipeline {
     agent any
     stages {
-
+        stage{'PMD'} {
+            }
         stage('Build') {
             steps {
                 sh 'echo "Hello World"'
