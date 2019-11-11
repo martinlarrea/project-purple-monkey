@@ -1,9 +1,13 @@
 pipeline {
-    agent none
+    agent any
     stages {
-        stage('build') {
+        stage('Build') {
             steps {
-                sh 'java -jar purple-monkey-beta.jar'
+                sh 'echo "Hello World"'
+                sh '''
+                    echo "Multiline shell steps works too"
+                    ls -lah
+                '''
             }
         }
     }
