@@ -1,8 +1,15 @@
 pipeline {
     agent any
     stages {
-        stage{'PMD'} {
-            }
+    
+        stage('Say Hello') {
+     	 agent any
+
+     	 steps {
+       		 sayHello 'Awesome Student!'
+     		 }
+   		 }
+            
         stage('Build') {
             steps {
                 sh 'echo "Hello World"'
