@@ -6,7 +6,7 @@ pipeline {
      	 agent any
 
      	 steps {
-       		 sayHello 'Awesome Student!'
+       		 sh 'echo Awesome Student!'
      		 }
    		 }
             
